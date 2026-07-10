@@ -1,0 +1,136 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm top-navbar">
+
+    <div class="container-fluid">
+
+        <button class="btn d-lg-none me-3" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <a class="navbar-brand d-flex align-items-center" href="/">
+
+            <div class="logo-box">
+
+                <i class="fas fa-hospital"></i>
+
+            </div>
+
+            <div class="ms-2">
+
+                <h5 class="mb-0 fw-bold">
+                    Hospital Management
+                </h5>
+
+                <small class="text-muted">
+                    Healthcare System
+                </small>
+
+            </div>
+
+        </a>
+
+        <form class="d-none d-md-flex search-box mx-auto">
+
+            <div class="input-group">
+
+                <span class="input-group-text">
+
+                    <i class="fas fa-search"></i>
+
+                </span>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search patients, doctors...">
+
+            </div>
+
+        </form>
+
+        <div class="d-flex align-items-center">
+
+            <button class="btn nav-icon position-relative me-3">
+
+                <i class="fas fa-bell"></i>
+
+                <span class="notification-badge">3</span>
+
+            </button>
+
+            <button class="btn nav-icon me-3">
+
+                <i class="fas fa-envelope"></i>
+
+            </button>
+
+            <div class="dropdown">
+
+                <button
+                    class="btn profile-btn dropdown-toggle"
+                    data-bs-toggle="dropdown">
+
+                    <img src="{{ url_for('static', filename='images/logo/logo.png') }}"
+                         class="profile-image"
+                         alt="Profile">
+
+                    <span class="ms-2">
+
+                        Admin
+
+                    </span>
+
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    <li>
+
+                        <a class="dropdown-item" href="#">
+
+                            <i class="fas fa-user me-2"></i>
+
+                            Profile
+
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a class="dropdown-item" href="#">
+
+                            <i class="fas fa-cog me-2"></i>
+
+                            Settings
+
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <hr class="dropdown-divider">
+
+                    </li>
+
+                    <li>
+
+                        <a class="dropdown-item text-danger" href="#">
+
+                            <i class="fas fa-sign-out-alt me-2"></i>
+
+                            Logout
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>

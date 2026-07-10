@@ -1,0 +1,242 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Doctor Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">Doctor Management</h2>
+            <p class="text-muted mb-0">
+                Manage all doctors in the hospital
+            </p>
+        </div>
+
+        <a href="{{ url_for('doctor.add_doctor') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>
+            Add Doctor
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+
+                    <input
+                        type="text"
+                        id="searchDoctor"
+                        class="form-control"
+                        placeholder="Search doctor...">
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle" id="doctorTable">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>#</th>
+                            <th>Photo</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Specialization</th>
+                            <th>Experience</th>
+                            <th>Fee</th>
+                            <th>Status</th>
+                            <th width="170">Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% if doctors %}
+
+                        {% for doctor in doctors %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+                            <td>
+
+                                <img
+                                    src="{{ url_for('static', filename='uploads/doctors/' + (doctor.photo or 'default-doctor.png')) }}"
+                                    class="rounded-circle border"
+                                    width="55"
+                                    height="55"
+                                    style="object-fit:cover;">
+
+                            </td>
+
+                            <td>
+
+                                <a href="{{ url_for('doctor.profile', id=doctor.id) }}"
+                                   class="fw-bold text-decoration-none">
+
+                                    {{ doctor.user.full_name }}
+
+                                </a>
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    {{ doctor.doctor_code }}
+
+                                </small>
+
+                            </td>
+
+                            <td>
+
+                                {{ doctor.department.name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ doctor.specialization }}
+
+                            </td>
+
+                            <td>
+
+                                {{ doctor.experience }} Years
+
+                            </td>
+
+                            <td>
+
+                                ₹{{ doctor.consultation_fee }}
+
+                            </td>
+
+                            <td>
+
+                                {% if doctor.status %}
+
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <a href="{{ url_for('doctor.profile', id=doctor.id) }}"
+                                   class="btn btn-info btn-sm"
+                                   title="View">
+
+                                    <i class="fas fa-eye"></i>
+
+                                </a>
+
+                                <a href="{{ url_for('doctor.edit_doctor', id=doctor.id) }}"
+                                   class="btn btn-warning btn-sm"
+                                   title="Edit">
+
+                                    <i class="fas fa-pen"></i>
+
+                                </a>
+
+                                <a href="{{ url_for('doctor.delete_doctor', id=doctor.id) }}"
+                                   class="btn btn-danger btn-sm"
+                                   title="Delete"
+                                   onclick="return confirm('Are you sure you want to delete this doctor?');">
+
+                                    <i class="fas fa-trash"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="9" class="text-center py-5">
+
+                                <i class="fas fa-user-doctor fa-4x text-secondary mb-3"></i>
+
+                                <h4>No Doctors Found</h4>
+
+                                <p class="text-muted">
+
+                                    Click the <strong>Add Doctor</strong> button to create your first doctor.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const search = document.getElementById("searchDoctor");
+
+    search.addEventListener("keyup", function () {
+
+        let value = this.value.toLowerCase();
+
+        let rows = document.querySelectorAll("#doctorTable tbody tr");
+
+        rows.forEach(function (row) {
+
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? ""
+                : "none";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

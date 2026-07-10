@@ -1,0 +1,262 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Doctor Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <img src="{{ url_for('static', filename='uploads/doctors/' + doctor.photo) }}"
+                         class="rounded-circle img-thumbnail mb-3"
+                         width="180"
+                         height="180">
+
+                    <h3 class="fw-bold">
+
+                        {{ doctor.user.full_name }}
+
+                    </h3>
+
+                    <p class="text-muted">
+
+                        {{ doctor.specialization }}
+
+                    </p>
+
+                    <span class="badge bg-primary">
+
+                        {{ doctor.department.name }}
+
+                    </span>
+
+                    <hr>
+
+                    {% if doctor.status %}
+
+                        <span class="badge bg-success">
+
+                            Active
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Inactive
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <h4 class="mb-0">
+
+                        Doctor Information
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Doctor Code
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.doctor_code }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Qualification
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.qualification }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Experience
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.experience }} Years
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Consultation Fee
+
+                            </label>
+
+                            <p>
+
+                                ₹ {{ doctor.consultation_fee }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Email
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.user.email }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Phone
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.user.phone }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Available Days
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.available_days }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="fw-bold">
+
+                                Available Time
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.available_time }}
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+
+                            <label class="fw-bold">
+
+                                Address
+
+                            </label>
+
+                            <p>
+
+                                {{ doctor.address }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-end">
+
+                    <a href="{{ url_for('doctor.edit_doctor', id=doctor.id) }}"
+                       class="btn btn-warning">
+
+                        <i class="fas fa-edit me-2"></i>
+
+                        Edit Doctor
+
+                    </a>
+
+                    <a href="{{ url_for('doctor.list_doctors') }}"
+                       class="btn btn-secondary">
+
+                        Back
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

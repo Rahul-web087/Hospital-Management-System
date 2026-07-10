@@ -1,0 +1,314 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Add Doctor
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h3 class="mb-0">
+
+                        <i class="fas fa-user-doctor me-2"></i>
+
+                        Add Doctor
+
+                    </h3>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST"
+                          enctype="multipart/form-data">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Full Name
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="full_name"
+                                    class="form-control"
+                                    placeholder="Doctor Name"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Email
+
+                                </label>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    class="form-control"
+                                    placeholder="doctor@email.com"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Phone
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    class="form-control"
+                                    placeholder="9876543210"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Department
+
+                                </label>
+
+                                <select
+                                    name="department_id"
+                                    class="form-select"
+                                    required>
+
+                                    <option value="">
+                                        Select Department
+                                    </option>
+
+                                    {% for department in departments %}
+
+                                    <option
+                                        value="{{ department.id }}">
+
+                                        {{ department.name }}
+
+                                    </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Qualification
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="qualification"
+                                    class="form-control"
+                                    placeholder="MBBS, MD"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Specialization
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="specialization"
+                                    class="form-control"
+                                    placeholder="Cardiology"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Experience (Years)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="experience"
+                                    class="form-control"
+                                    min="0"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Consultation Fee
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="consultation_fee"
+                                    class="form-control"
+                                    placeholder="500"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Available Days
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="available_days"
+                                    class="form-control"
+                                    placeholder="Mon - Sat">
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+
+                                    Available Time
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="available_time"
+                                    class="form-control"
+                                    placeholder="09:00 AM - 05:00 PM">
+
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+
+                                <label class="form-label">
+
+                                    Address
+
+                                </label>
+
+                                <textarea
+                                    name="address"
+                                    rows="4"
+                                    class="form-control"
+                                    placeholder="Doctor Address"></textarea>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+
+                                    Doctor Photo
+
+                                </label>
+
+                                <input
+                                    type="file"
+                                    name="photo"
+                                    class="form-control"
+                                    accept="image/*">
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+
+                                    Status
+
+                                </label>
+
+                                <select
+                                    name="status"
+                                    class="form-select">
+
+                                    <option value="1">
+                                        Active
+                                    </option>
+
+                                    <option value="0">
+                                        Inactive
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a href="{{ url_for('doctor.list_doctors') }}"
+                               class="btn btn-secondary">
+
+                                <i class="fas fa-arrow-left me-2"></i>
+
+                                Back
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                                <i class="fas fa-save me-2"></i>
+
+                                Save Doctor
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,782 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Patient Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Dashboard Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                Patient Dashboard
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Welcome, {{ current_user.full_name }}
+
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('patient.profile', id=patient.id) }}"
+           class="btn btn-primary">
+
+            <i class="fas fa-user me-2"></i>
+
+            My Profile
+
+        </a>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Appointments
+
+                            </h6>
+
+                            <h2 class="fw-bold">
+
+                                {{ total_appointments|default(0) }}
+
+                            </h2>
+
+                        </div>
+
+                        <i class="fas fa-calendar-check fa-3x text-primary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Prescriptions
+
+                            </h6>
+
+                            <h2 class="fw-bold">
+
+                                {{ total_prescriptions|default(0) }}
+
+                            </h2>
+
+                        </div>
+
+                        <i class="fas fa-file-medical fa-3x text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Reports
+
+                            </h6>
+
+                            <h2 class="fw-bold">
+
+                                {{ total_reports|default(0) }}
+
+                            </h2>
+
+                        </div>
+
+                        <i class="fas fa-notes-medical fa-3x text-danger"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Bills
+
+                            </h6>
+
+                            <h2 class="fw-bold">
+
+                                {{ total_bills|default(0) }}
+
+                            </h2>
+
+                        </div>
+
+                        <i class="fas fa-file-invoice-dollar fa-3x text-warning"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                Quick Actions
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="{{ url_for('patient.book_appointment') }}"
+                       class="btn btn-outline-primary w-100 py-3">
+
+                        <i class="fas fa-calendar-plus fa-2x d-block mb-2"></i>
+
+                        Book Appointment
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="{{ url_for('patient.appointments') }}"
+                       class="btn btn-outline-success w-100 py-3">
+
+                        <i class="fas fa-calendar-check fa-2x d-block mb-2"></i>
+
+                        My Appointments
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="{{ url_for('patient.prescriptions') }}"
+                       class="btn btn-outline-danger w-100 py-3">
+
+                        <i class="fas fa-file-medical fa-2x d-block mb-2"></i>
+
+                        Prescriptions
+
+                    </a>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+
+                    <a href="{{ url_for('patient.chatbot') }}"
+                       class="btn btn-outline-info w-100 py-3">
+
+                        <i class="fas fa-robot fa-2x d-block mb-2"></i>
+
+                        AI Assistant
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- Upcoming Appointments -->
+
+    <div class="row">
+
+        <div class="col-lg-8 mb-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-success text-white">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h5 class="mb-0">
+
+                            Upcoming Appointments
+
+                        </h5>
+
+                        <a href="{{ url_for('patient.appointments') }}"
+                           class="btn btn-light btn-sm">
+
+                            View All
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if appointments %}
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>Date</th>
+
+                                <th>Doctor</th>
+
+                                <th>Department</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            {% for appointment in appointments[:5] %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ appointment.appointment_date }}
+
+                                </td>
+
+                                <td>
+
+                                    Dr. {{ appointment.doctor.user.full_name }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ appointment.doctor.department.name }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if appointment.status=="Pending" %}
+
+                                    <span class="badge bg-warning">
+
+                                        Pending
+
+                                    </span>
+
+                                    {% elif appointment.status=="Approved" %}
+
+                                    <span class="badge bg-primary">
+
+                                        Approved
+
+                                    </span>
+
+                                    {% elif appointment.status=="Completed" %}
+
+                                    <span class="badge bg-success">
+
+                                        Completed
+
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        Cancelled
+
+                                    </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="text-center py-5">
+
+                        <i class="fas fa-calendar-times fa-4x text-secondary mb-3"></i>
+
+                        <h5>
+
+                            No Upcoming Appointments
+
+                        </h5>
+
+                        <p class="text-muted">
+
+                            Book your first appointment.
+
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Medical Summary -->
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-info text-white">
+
+                    <h5 class="mb-0">
+
+                        Medical Summary
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="mb-3">
+
+                        <label class="fw-bold">
+
+                            Blood Group
+
+                        </label>
+
+                        <p>
+
+                            {{ patient.blood_group }}
+
+                        </p>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="fw-bold">
+
+                            Allergies
+
+                        </label>
+
+                        <p>
+
+                            {{ patient.allergies or "None" }}
+
+                        </p>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="fw-bold">
+
+                            Emergency Contact
+
+                        </label>
+
+                        <p>
+
+                            {{ patient.emergency_contact }}
+
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <label class="fw-bold">
+
+                            Contact Number
+
+                        </label>
+
+                        <p>
+
+                            {{ patient.emergency_phone }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card shadow border-0 mt-4">
+
+                <div class="card-header bg-danger text-white">
+
+                    <h5 class="mb-0">
+
+                        Recent Prescriptions
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if prescriptions %}
+
+                    <ul class="list-group list-group-flush">
+
+                        {% for prescription in prescriptions[:5] %}
+
+                        <li class="list-group-item">
+
+                            <strong>
+
+                                {{ prescription.doctor.user.full_name }}
+
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ prescription.created_at.strftime('%d %b %Y') }}
+
+                            </small>
+
+                        </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                    {% else %}
+
+                    <p class="text-center text-muted">
+
+                        No prescriptions available.
+
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- Bottom Section -->
+
+    <div class="row">
+
+        <!-- Bills -->
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-warning">
+
+                    <h5 class="mb-0 text-dark">
+
+                        Billing Summary
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-file-invoice-dollar
+                              fa-4x
+                              text-warning
+                              mb-3"></i>
+
+                    <h3>
+
+                        {{ total_bills|default(0) }}
+
+                    </h3>
+
+                    <p class="text-muted">
+
+                        Total Bills
+
+                    </p>
+
+                    <a href="{{ url_for('patient.bills') }}"
+                       class="btn btn-warning">
+
+                        View Bills
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Reports -->
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+
+                        Medical Reports
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-notes-medical
+                              fa-4x
+                              text-primary
+                              mb-3"></i>
+
+                    <h3>
+
+                        {{ total_reports|default(0) }}
+
+                    </h3>
+
+                    <p class="text-muted">
+
+                        Uploaded Reports
+
+                    </p>
+
+                    <a href="{{ url_for('patient.reports') }}"
+                       class="btn btn-primary">
+
+                        View Reports
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- AI Assistant -->
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-success text-white">
+
+                    <h5 class="mb-0">
+
+                        AI Health Assistant
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-robot
+                              fa-4x
+                              text-success
+                              mb-3"></i>
+
+                    <h5>
+
+                        Need Health Advice?
+
+                    </h5>
+
+                    <p class="text-muted">
+
+                        Ask our AI assistant about
+                        symptoms, medicines and
+                        general health questions.
+
+                    </p>
+
+                    <a href="{{ url_for('patient.chatbot') }}"
+                       class="btn btn-success">
+
+                        Open Chatbot
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Health Tips -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+
+                Health Tips
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-success">
+
+                        💧 Drink at least
+                        <strong>2-3 Liters</strong>
+                        of water every day.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-primary">
+
+                        🚶 Walk
+                        <strong>30 Minutes</strong>
+                        daily.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-warning">
+
+                        🥗 Eat more fruits
+                        and vegetables.
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="alert alert-danger">
+
+                        😴 Sleep
+                        <strong>7-8 Hours</strong>
+                        every night.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

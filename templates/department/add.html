@@ -1,0 +1,117 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Add Department
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4 class="mb-0">
+
+                        <i class="fas fa-building me-2"></i>
+
+                        Add New Department
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Department Name
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                placeholder="Enter Department Name"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Description
+
+                            </label>
+
+                            <textarea
+                                name="description"
+                                class="form-control"
+                                rows="5"
+                                placeholder="Department Description"></textarea>
+
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="status"
+                                checked>
+
+                            <label class="form-check-label">
+
+                                Active Department
+
+                            </label>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a href="{{ url_for('department.list_departments') }}"
+                               class="btn btn-secondary">
+
+                                <i class="fas fa-arrow-left me-2"></i>
+
+                                Back
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                                <i class="fas fa-save me-2"></i>
+
+                                Save Department
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
