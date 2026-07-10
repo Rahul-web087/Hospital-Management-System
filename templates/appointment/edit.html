@@ -1,0 +1,243 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Edit Appointment
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+                <i class="fa-solid fa-pen-to-square text-warning"></i>
+                Edit Appointment
+            </h3>
+
+            <p class="text-muted mb-0">
+                Update appointment details
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('appointment.list_appointments') }}"
+           class="btn btn-secondary">
+
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <!-- Patient -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Patient</label>
+
+                        <select class="form-select"
+                                name="patient_id"
+                                required>
+
+                            {% for patient in patients %}
+
+                            <option value="{{ patient.id }}"
+                                {% if patient.id == appointment.patient_id %}selected{% endif %}>
+
+                                {{ patient.patient_code }} -
+                                {{ patient.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Doctor -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">Doctor</label>
+
+                        <select class="form-select"
+                                name="doctor_id"
+                                required>
+
+                            {% for doctor in doctors %}
+
+                            <option value="{{ doctor.id }}"
+                                {% if doctor.id == appointment.doctor_id %}selected{% endif %}>
+
+                                Dr. {{ doctor.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Date -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Appointment Date
+                        </label>
+
+                        <input type="date"
+                               class="form-control"
+                               name="appointment_date"
+                               value="{{ appointment.appointment_date }}"
+                               required>
+
+                    </div>
+
+                    <!-- Time -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Appointment Time
+                        </label>
+
+                        <input type="time"
+                               class="form-control"
+                               name="appointment_time"
+                               value="{{ appointment.appointment_time.strftime('%H:%M') }}"
+                               required>
+
+                    </div>
+
+                    <!-- Visit Type -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Visit Type
+                        </label>
+
+                        <select class="form-select"
+                                name="visit_type">
+
+                            <option value="OPD"
+                                {% if appointment.visit_type=="OPD" %}selected{% endif %}>
+                                OPD
+                            </option>
+
+                            <option value="IPD"
+                                {% if appointment.visit_type=="IPD" %}selected{% endif %}>
+                                IPD
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- Fee -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Consultation Fee
+                        </label>
+
+                        <input type="number"
+                               step="0.01"
+                               class="form-control"
+                               name="fee"
+                               value="{{ appointment.fee }}">
+
+                    </div>
+
+                    <!-- Status -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Status
+                        </label>
+
+                        <select class="form-select"
+                                name="status">
+
+                            {% for s in ["Pending","Confirmed","Completed","Cancelled"] %}
+
+                            <option value="{{ s }}"
+                                {% if appointment.status==s %}selected{% endif %}>
+                                {{ s }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Reason -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Reason
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="reason"
+                               value="{{ appointment.reason }}">
+
+                    </div>
+
+                    <!-- Remarks -->
+
+                    <div class="col-12 mb-3">
+
+                        <label class="form-label">
+                            Remarks
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  name="remarks">{{ appointment.remarks }}</textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="text-end">
+
+                    <button type="submit"
+                            class="btn btn-warning">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Update Appointment
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

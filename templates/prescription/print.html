@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+
+        {{ prescription.prescription_no }}
+
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+
+            background:#fff;
+            font-size:14px;
+            padding:30px;
+
+        }
+
+        .hospital-header{
+
+            text-align:center;
+            border-bottom:3px solid #0d6efd;
+            padding-bottom:15px;
+            margin-bottom:25px;
+
+        }
+
+        .hospital-header h2{
+
+            font-weight:bold;
+            margin-bottom:5px;
+
+        }
+
+        .section-title{
+
+            background:#0d6efd;
+            color:white;
+            padding:8px 12px;
+            margin-top:20px;
+            margin-bottom:10px;
+            border-radius:5px;
+
+        }
+
+        table{
+
+            width:100%;
+
+        }
+
+        th{
+
+            width:180px;
+
+        }
+
+        .signature{
+
+            margin-top:80px;
+            text-align:right;
+
+        }
+
+        @media print{
+
+            .no-print{
+
+                display:none;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+
+    <div class="hospital-header">
+
+        <h2>
+
+            Hospital Management System
+
+        </h2>
+
+        <p>
+
+            City Hospital, Main Road
+
+            <br>
+
+            Phone : +91 9876543210
+
+            <br>
+
+            Email : info@hospital.com
+
+        </p>
+
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="text-end mb-3 no-print">
+
+        <button
+                onclick="window.print()"
+                class="btn btn-success">
+
+            Print
+
+        </button>
+
+        <a href="{{ url_for('prescription.view_prescription',id=prescription.id) }}"
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+    <!-- Patient -->
+
+    <h5 class="section-title">
+
+        Patient Details
+
+    </h5>
+
+    <table class="table table-borderless">
+
+        <tr>
+
+            <th>
+
+                Prescription No
+
+            </th>
+
+            <td>
+
+                {{ prescription.prescription_no }}
+
+            </td>
+
+            <th>
+
+                Date
+
+            </th>
+
+            <td>
+
+                {{ prescription.created_at.strftime("%d-%m-%Y") }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Patient
+
+            </th>
+
+            <td>
+
+                {{ prescription.patient.user.full_name }}
+
+            </td>
+
+            <th>
+
+                Patient Code
+
+            </th>
+
+            <td>
+
+                {{ prescription.patient.patient_code }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>
+
+                Doctor
+
+            </th>
+
+            <td>
+
+                Dr. {{ prescription.doctor.user.full_name }}
+
+            </td>
+
+            <th>
+
+                Department
+
+            </th>
+
+            <td>
+
+                {{ prescription.doctor.department.name }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <!-- Diagnosis -->
+
+    <h5 class="section-title">
+
+        Diagnosis
+
+    </h5>
+
+    <p>
+
+        {{ prescription.diagnosis }}
+
+    </p>
+
+    <!-- Symptoms -->
+
+    <h5 class="section-title">
+
+        Symptoms
+
+    </h5>
+
+    <p>
+
+        {{ prescription.symptoms or "Not Available" }}
+
+    </p>
+
+    <!-- Medicines -->
+
+    <h5 class="section-title">
+
+        Medicines
+
+    </h5>
+
+    <table class="table table-bordered">
+
+        <thead class="table-light">
+
+        <tr>
+
+            <th>#</th>
+
+            <th>Medicine</th>
+
+            <th>Dosage</th>
+
+            <th>Frequency</th>
+
+            <th>Duration</th>
+
+            <th>Instructions</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for medicine in medicines %}
+
+        <tr>
+
+            <td>
+
+                {{ loop.index }}
+
+            </td>
+
+            <td>
+
+                {{ medicine.medicine_name }}
+
+            </td>
+
+            <td>
+
+                {{ medicine.dosage }}
+
+            </td>
+
+            <td>
+
+                {{ medicine.frequency }}
+
+            </td>
+
+            <td>
+
+                {{ medicine.duration }}
+
+            </td>
+
+            <td>
+
+                {{ medicine.instructions }}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <!-- Notes -->
+
+    <h5 class="section-title">
+
+        Doctor Notes
+
+    </h5>
+
+    <p>
+
+        {{ prescription.notes or "No Notes Available" }}
+
+    </p>
+
+    <!-- Follow Up -->
+
+    {% if prescription.follow_up_date %}
+
+    <h5 class="section-title">
+
+        Follow Up Date
+
+    </h5>
+
+    <p>
+
+        {{ prescription.follow_up_date.strftime("%d-%m-%Y") }}
+
+    </p>
+
+    {% endif %}
+
+    <!-- Signature -->
+
+    <div class="signature">
+
+        ___________________________
+
+        <br>
+
+        <strong>
+
+            Dr. {{ prescription.doctor.user.full_name }}
+
+        </strong>
+
+        <br>
+
+        {{ prescription.doctor.specialization }}
+
+    </div>
+
+</div>
+
+</body>
+{% include "layout/print_disclaimer.html" %}
+</html>

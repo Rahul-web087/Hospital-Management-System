@@ -1,0 +1,426 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+View Prescription
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fa-solid fa-file-prescription text-success"></i>
+
+                Prescription Details
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                {{ prescription.prescription_no }}
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('prescription.edit_prescription', id=prescription.id) }}"
+               class="btn btn-warning">
+
+                <i class="fa fa-edit"></i>
+
+                Edit
+
+            </a>
+
+            <a href="{{ url_for('prescription.print_prescription', id=prescription.id) }}"
+               class="btn btn-success">
+
+                <i class="fa fa-print"></i>
+
+                Print
+
+            </a>
+
+            <a href="{{ url_for('prescription.list_prescriptions') }}"
+               class="btn btn-secondary">
+
+                <i class="fa fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Patient & Doctor -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                Patient & Doctor Information
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Prescription No
+
+                            </th>
+
+                            <td>
+
+                                {{ prescription.prescription_no }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Patient
+
+                            </th>
+
+                            <td>
+
+                                {{ prescription.patient.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Patient Code
+
+                            </th>
+
+                            <td>
+
+                                {{ prescription.patient.patient_code }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Appointment
+
+                            </th>
+
+                            <td>
+
+                                {{ prescription.appointment.appointment_no }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Doctor
+
+                            </th>
+
+                            <td>
+
+                                Dr. {{ prescription.doctor.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Department
+
+                            </th>
+
+                            <td>
+
+                                {{ prescription.doctor.department.name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Follow Up
+
+                            </th>
+
+                            <td>
+
+                                {% if prescription.follow_up_date %}
+
+                                    {{ prescription.follow_up_date.strftime('%d-%m-%Y') }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Status
+
+                            </th>
+
+                            <td>
+
+                                {% if prescription.status=="Active" %}
+
+                                <span class="badge bg-success">
+
+                                    Active
+
+                                </span>
+
+                                {% elif prescription.status=="Completed" %}
+
+                                <span class="badge bg-primary">
+
+                                    Completed
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Cancelled
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Diagnosis -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-info text-white">
+
+            <h5 class="mb-0">
+
+                Diagnosis & Symptoms
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <h6>
+
+                Diagnosis
+
+            </h6>
+
+            <p>
+
+                {{ prescription.diagnosis }}
+
+            </p>
+
+            <hr>
+
+            <h6>
+
+                Symptoms
+
+            </h6>
+
+            <p>
+
+                {{ prescription.symptoms or "Not Available" }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Medicines -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-success text-white">
+
+            <h5 class="mb-0">
+
+                Medicines
+
+            </h5>
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Medicine</th>
+
+                    <th>Dosage</th>
+
+                    <th>Frequency</th>
+
+                    <th>Duration</th>
+
+                    <th>Instructions</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td>
+
+                        {{ loop.index }}
+
+                    </td>
+
+                    <td>
+
+                        {{ medicine.medicine_name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ medicine.dosage }}
+
+                    </td>
+
+                    <td>
+
+                        {{ medicine.frequency }}
+
+                    </td>
+
+                    <td>
+
+                        {{ medicine.duration }}
+
+                    </td>
+
+                    <td>
+
+                        {{ medicine.instructions }}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Notes -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-warning">
+
+            <h5 class="mb-0">
+
+                Doctor Notes
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            {{ prescription.notes or "No Notes Available" }}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

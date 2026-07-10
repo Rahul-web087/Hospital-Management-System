@@ -1,0 +1,322 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Appointment Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fa-solid fa-calendar-check text-success"></i>
+
+                Appointment Details
+
+            </h3>
+
+            <p class="text-muted">
+
+                Complete appointment information
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('appointment.edit_appointment', id=appointment.id) }}"
+               class="btn btn-warning">
+
+                <i class="fa fa-edit"></i>
+                Edit
+
+            </a>
+
+            <button onclick="window.print()"
+                    class="btn btn-success">
+
+                <i class="fa fa-print"></i>
+                Print
+
+            </button>
+
+            <a href="{{ url_for('appointment.list_appointments') }}"
+               class="btn btn-secondary">
+
+                <i class="fa fa-arrow-left"></i>
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                {{ appointment.appointment_no }}
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+                                Patient
+                            </th>
+
+                            <td>
+
+                                {{ appointment.patient.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+                                Patient Code
+                            </th>
+
+                            <td>
+
+                                {{ appointment.patient.patient_code }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+                                Doctor
+                            </th>
+
+                            <td>
+
+                                Dr.
+                                {{ appointment.doctor.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+                                Department
+                            </th>
+
+                            <td>
+
+                                {{ appointment.doctor.department.name }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Appointment Date
+
+                            </th>
+
+                            <td>
+
+                                {{ appointment.appointment_date.strftime('%d-%m-%Y') }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Appointment Time
+
+                            </th>
+
+                            <td>
+
+                                {{ appointment.appointment_time.strftime('%I:%M %p') }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Visit Type
+
+                            </th>
+
+                            <td>
+
+                                {{ appointment.visit_type }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Token Number
+
+                            </th>
+
+                            <td>
+
+                                {{ appointment.token_number }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <strong>Consultation Fee</strong>
+
+                    <p class="fs-5 text-primary">
+
+                        ₹ {{ "%.2f"|format(appointment.fee) }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <strong>Status</strong>
+
+                    <br>
+
+                    {% if appointment.status=="Pending" %}
+
+                    <span class="badge bg-warning text-dark">
+
+                        Pending
+
+                    </span>
+
+                    {% elif appointment.status=="Confirmed" %}
+
+                    <span class="badge bg-primary">
+
+                        Confirmed
+
+                    </span>
+
+                    {% elif appointment.status=="Completed" %}
+
+                    <span class="badge bg-success">
+
+                        Completed
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-danger">
+
+                        Cancelled
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <strong>Created</strong>
+
+                    <p>
+
+                        {{ appointment.created_at.strftime('%d-%m-%Y %I:%M %p') }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h5>
+
+                Reason
+
+            </h5>
+
+            <p>
+
+                {{ appointment.reason or "Not Provided" }}
+
+            </p>
+
+            <hr>
+
+            <h5>
+
+                Remarks
+
+            </h5>
+
+            <p>
+
+                {{ appointment.remarks or "No Remarks" }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

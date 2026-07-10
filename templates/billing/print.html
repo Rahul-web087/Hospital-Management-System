@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Invoice {{ bill.bill_no }}
+
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+
+        body{
+
+            background:#f8f9fa;
+            font-family:Arial,sans-serif;
+
+        }
+
+        .invoice{
+
+            background:#fff;
+            padding:40px;
+            margin:30px auto;
+            max-width:1000px;
+            box-shadow:0 0 15px rgba(0,0,0,.15);
+
+        }
+
+        .hospital-logo{
+
+            width:90px;
+
+        }
+
+        .title{
+
+            font-size:34px;
+            font-weight:bold;
+            color:#0d6efd;
+
+        }
+
+        .sub-title{
+
+            color:#6c757d;
+
+        }
+
+        .section-title{
+
+            background:#0d6efd;
+            color:#fff;
+            padding:8px 15px;
+            margin-top:25px;
+            margin-bottom:15px;
+            border-radius:4px;
+            font-size:18px;
+
+        }
+
+        .table th{
+
+            background:#f8f9fa;
+
+        }
+
+        .summary td{
+
+            padding:8px;
+
+        }
+
+        .signature{
+
+            margin-top:80px;
+
+        }
+
+        .signature-box{
+
+            text-align:center;
+
+        }
+
+        .signature-line{
+
+            border-top:1px solid #000;
+            margin-top:60px;
+            padding-top:8px;
+
+        }
+
+        @media print{
+
+            .no-print{
+
+                display:none;
+
+            }
+
+            body{
+
+                background:white;
+
+            }
+
+            .invoice{
+
+                box-shadow:none;
+                margin:0;
+                width:100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="invoice">
+
+<div class="text-end mb-4 no-print">
+
+<button
+        class="btn btn-success"
+        onclick="window.print()">
+
+<i class="fa fa-print"></i>
+
+Print
+
+</button>
+
+<a href="{{ url_for('billing.view_bill',id=bill.id) }}"
+   class="btn btn-secondary">
+
+Back
+
+</a>
+
+</div>
+
+<!-- Header -->
+
+<div class="row align-items-center">
+
+<div class="col-2">
+
+<img
+src="{{ url_for('static', filename='images/logo/logo.png') }}"
+class="hospital-logo"
+alt="Hospital Logo">
+
+</div>
+
+<div class="col-7">
+
+<div class="title">
+
+Hospital Management System
+
+</div>
+
+<div class="sub-title">
+
+Main Road, Your City
+
+<br>
+
+Phone : +91-9876543210
+
+<br>
+
+Email : info@hospital.com
+
+</div>
+
+</div>
+
+<div class="col-3 text-end">
+
+<h3>
+
+INVOICE
+
+</h3>
+
+<h5 class="text-primary">
+
+{{ bill.bill_no }}
+
+</h5>
+
+<p>
+
+{{ bill.created_at.strftime('%d-%m-%Y') }}
+
+</p>
+
+</div>
+
+</div>
+
+<hr>
+
+<!-- Patient Details -->
+
+<div class="section-title">
+
+Patient Information
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6">
+
+<table class="table table-borderless">
+
+<tr>
+
+<th width="180">
+
+Patient Name
+
+</th>
+
+<td>
+
+{{ bill.patient.user.full_name }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>
+
+Patient Code
+
+</th>
+
+<td>
+
+{{ bill.patient.patient_code }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>
+
+Phone
+
+</th>
+
+<td>
+
+{{ bill.patient.user.phone }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>
+
+Gender
+
+</th>
+
+<td>
+
+{{ bill.patient.gender }}
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="col-md-6">
+
+<table class="table table-borderless">
+
+<tr>
+
+<th width="180">
+
+Doctor
+
+</th>
+
+<td>
+
+Dr. {{ bill.doctor.user.full_name }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>
+
+Department
+
+</th>
+
+<td>
+
+{{ bill.doctor.department.name }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>
+
+Appointment
+
+</th>
+
+<td>
+
+{{ bill.appointment.appointment_no }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<th>
+
+Payment Status
+
+</th>
+
+<td>
+
+<span class="badge bg-success">
+
+{{ bill.payment_status }}
+
+</span>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- Bill Items -->
+
+<div class="section-title">
+
+Invoice Items
+
+</div>
+
+<table class="table table-bordered">
+
+<thead>
+
+<tr>
+
+<th>#</th>
+
+<th>Item</th>
+
+<th width="120">
+
+Qty
+
+</th>
+
+<th width="150">
+
+Price
+
+</th>
+
+<th width="150">
+
+Total
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for item in items %}
+
+<tr>
+
+<td>
+
+{{ loop.index }}
+
+</td>
+
+<td>
+
+{{ item.item_name }}
+
+</td>
+
+<td>
+
+{{ item.quantity }}
+
+</td>
+
+<td>
+
+₹ {{ "%.2f"|format(item.price) }}
+
+</td>
+
+<td>
+
+₹ {{ "%.2f"|format(item.total) }}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+    <!-- Bill Summary -->
+
+<div class="row mt-4">
+
+    <div class="col-md-7">
+
+        <div class="section-title">
+
+            Payment Information
+
+        </div>
+
+        <table class="table table-borderless">
+
+            <tr>
+
+                <th width="220">
+
+                    Payment Method
+
+                </th>
+
+                <td>
+
+                    {{ bill.payment_method }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Payment Status
+
+                </th>
+
+                <td>
+
+                    {% if bill.payment_status=="Paid" %}
+
+                    <span class="badge bg-success">
+
+                        Paid
+
+                    </span>
+
+                    {% elif bill.payment_status=="Pending" %}
+
+                    <span class="badge bg-warning text-dark">
+
+                        Pending
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-danger">
+
+                        Cancelled
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Prescription
+
+                </th>
+
+                <td>
+
+                    {% if bill.prescription %}
+
+                        {{ bill.prescription.prescription_no }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Remarks
+
+                </th>
+
+                <td>
+
+                    {{ bill.remarks or "No Remarks" }}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="col-md-5">
+
+        <div class="section-title">
+
+            Bill Summary
+
+        </div>
+
+        <table class="table summary table-bordered">
+
+            <tr>
+
+                <th>
+
+                    Consultation Fee
+
+                </th>
+
+                <td class="text-end">
+
+                    ₹ {{ "%.2f"|format(bill.consultation_fee) }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Medicine Charges
+
+                </th>
+
+                <td class="text-end">
+
+                    ₹ {{ "%.2f"|format(bill.medicine_total) }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Laboratory Charges
+
+                </th>
+
+                <td class="text-end">
+
+                    ₹ {{ "%.2f"|format(bill.lab_total) }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Other Charges
+
+                </th>
+
+                <td class="text-end">
+
+                    ₹ {{ "%.2f"|format(bill.other_charges) }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Discount
+
+                </th>
+
+                <td class="text-end text-danger">
+
+                    - ₹ {{ "%.2f"|format(bill.discount) }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Tax
+
+                </th>
+
+                <td class="text-end">
+
+                    ₹ {{ "%.2f"|format(bill.tax) }}
+
+                </td>
+
+            </tr>
+
+            <tr class="table-primary">
+
+                <th>
+
+                    Grand Total
+
+                </th>
+
+                <th class="text-end">
+
+                    ₹ {{ "%.2f"|format(bill.grand_total) }}
+
+                </th>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- Signature -->
+
+<div class="row signature">
+
+    <div class="col-6">
+
+        <div class="signature-box">
+
+            <div class="signature-line">
+
+                Cashier Signature
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-6">
+
+        <div class="signature-box">
+
+            <div class="signature-line">
+
+                Doctor Signature
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Educational Disclaimer -->
+
+<hr class="mt-5">
+
+<div class="text-center mt-4"
+     style="font-size:12px;color:#6c757d;">
+
+    <strong>
+
+        Educational Disclaimer
+
+    </strong>
+
+    <p class="mt-2">
+
+        This invoice has been generated by the
+        <strong>Hospital Management System</strong>
+        developed by <strong>Rahul Nayak</strong>
+        as a Bachelor of Computer Applications (BCA)
+        academic project.
+
+    </p>
+
+    <p>
+
+        This software is intended solely for
+        educational, demonstration, and portfolio
+        purposes. It is not certified for clinical,
+        medical, accounting, legal, insurance,
+        or commercial hospital operations.
+
+    </p>
+
+    <p>
+
+        Any patient information, prescriptions,
+        billing details, medicines, appointments,
+        and reports shown in this application are
+        sample or demonstration data only.
+
+    </p>
+
+    <p class="fw-bold">
+
+        Do not use this invoice or any printed
+        document generated by this software for
+        real medical treatment, insurance claims,
+        financial transactions, or legal purposes.
+
+    </p>
+
+</div>
+
+<hr>
+
+<div class="text-center text-muted">
+
+    <small>
+
+        © 2026 Hospital Management System
+
+        <br>
+
+        Developed by Rahul Nayak
+
+    </small>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

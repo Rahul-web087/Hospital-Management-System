@@ -1,10 +1,757 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/base.html" %}
 
-</body>
-</html>
+{% block title %}
+Billing Payment
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fa-solid fa-credit-card text-primary"></i>
+
+                Billing & Payment
+
+            </h3>
+
+            <p class="text-muted">
+
+                Create Hospital Invoice
+
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('billing.list_bills') }}"
+           class="btn btn-secondary">
+
+            <i class="fa fa-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+    <form method="POST">
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+
+                    Patient Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <!-- Patient -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Patient
+
+                        </label>
+
+                        <select
+                                class="form-select"
+                                name="patient_id"
+                                required>
+
+                            <option value="">
+
+                                Select Patient
+
+                            </option>
+
+                            {% for patient in patients %}
+
+                            <option value="{{ patient.id }}">
+
+                                {{ patient.patient_code }}
+                                -
+                                {{ patient.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Doctor -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Doctor
+
+                        </label>
+
+                        <select
+                                class="form-select"
+                                name="doctor_id"
+                                required>
+
+                            <option value="">
+
+                                Select Doctor
+
+                            </option>
+
+                            {% for doctor in doctors %}
+
+                            <option value="{{ doctor.id }}">
+
+                                Dr.
+                                {{ doctor.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Appointment -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Appointment
+
+                        </label>
+
+                        <select
+                                class="form-select"
+                                name="appointment_id"
+                                required>
+
+                            <option value="">
+
+                                Select Appointment
+
+                            </option>
+
+                            {% for appointment in appointments %}
+
+                            <option value="{{ appointment.id }}">
+
+                                {{ appointment.appointment_no }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Prescription -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Prescription
+
+                        </label>
+
+                        <select
+                                class="form-select"
+                                name="prescription_id">
+
+                            <option value="">
+
+                                Select Prescription
+
+                            </option>
+
+                            {% for prescription in prescriptions %}
+
+                            <option value="{{ prescription.id }}">
+
+                                {{ prescription.prescription_no }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Charges -->
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-success text-white">
+
+                <h5 class="mb-0">
+
+                    Charges
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Consultation Fee
+
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value="0"
+                                id="consultation_fee"
+                                name="consultation_fee"
+                                class="form-control">
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Medicine Total
+
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value="0"
+                                id="medicine_total"
+                                name="medicine_total"
+                                class="form-control">
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Laboratory Charges
+
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value="0"
+                                id="lab_total"
+                                name="lab_total"
+                                class="form-control">
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Other Charges
+
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value="0"
+                                id="other_charges"
+                                name="other_charges"
+                                class="form-control">
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Discount
+
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value="0"
+                                id="discount"
+                                name="discount"
+                                class="form-control">
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Tax
+
+                        </label>
+
+                        <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value="0"
+                                id="tax"
+                                name="tax"
+                                class="form-control">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Payment Details -->
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-warning">
+
+                <h5 class="mb-0">
+
+                    Payment Details
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Payment Method
+
+                        </label>
+
+                        <select
+                                name="payment_method"
+                                class="form-select">
+
+                            <option>Cash</option>
+
+                            <option>UPI</option>
+
+                            <option>Credit Card</option>
+
+                            <option>Debit Card</option>
+
+                            <option>Net Banking</option>
+
+                            <option>Insurance</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Payment Status
+
+                        </label>
+
+                        <select
+                                name="payment_status"
+                                class="form-select">
+
+                            <option>Pending</option>
+
+                            <option>Paid</option>
+
+                            <option>Cancelled</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label>
+
+                            Grand Total
+
+                        </label>
+
+                        <input
+                                readonly
+                                id="grand_total"
+                                class="form-control fw-bold bg-light">
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label>
+
+                            Remarks
+
+                        </label>
+
+                        <textarea
+                                rows="3"
+                                class="form-control"
+                                name="remarks"></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- Bill Items -->
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-info text-white">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5 class="mb-0">
+
+                        Bill Items
+
+                    </h5>
+
+                    <button
+                            type="button"
+                            class="btn btn-light btn-sm"
+                            onclick="addItem()">
+
+                        <i class="fa fa-plus"></i>
+
+                        Add Item
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered"
+                           id="itemTable">
+
+                        <thead class="table-light">
+
+                        <tr>
+
+                            <th>Item</th>
+
+                            <th width="120">Qty</th>
+
+                            <th width="150">Price</th>
+
+                            <th width="150">Total</th>
+
+                            <th width="70"></th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                <input
+                                        name="item_name[]"
+                                        class="form-control"
+                                        required>
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                        type="number"
+                                        min="1"
+                                        value="1"
+                                        name="quantity[]"
+                                        class="form-control quantity"
+                                        oninput="calculateRow(this)">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value="0"
+                                        name="price[]"
+                                        class="form-control price"
+                                        oninput="calculateRow(this)">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                        readonly
+                                        value="0"
+                                        name="total[]"
+                                        class="form-control total">
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                        type="button"
+                                        class="btn btn-danger"
+                                        onclick="removeItem(this)">
+
+                                    <i class="fa fa-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="text-end mb-5">
+
+            <button
+                    type="submit"
+                    class="btn btn-primary btn-lg">
+
+                <i class="fa fa-save"></i>
+
+                Save Invoice
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+function addItem(){
+
+    let table=document.querySelector("#itemTable tbody");
+
+    table.insertAdjacentHTML("beforeend",`
+
+<tr>
+
+<td>
+
+<input
+name="item_name[]"
+class="form-control"
+required>
+
+</td>
+
+<td>
+
+<input
+type="number"
+min="1"
+value="1"
+name="quantity[]"
+class="form-control quantity"
+oninput="calculateRow(this)">
+
+</td>
+
+<td>
+
+<input
+type="number"
+min="0"
+step="0.01"
+value="0"
+name="price[]"
+class="form-control price"
+oninput="calculateRow(this)">
+
+</td>
+
+<td>
+
+<input
+readonly
+value="0"
+name="total[]"
+class="form-control total">
+
+</td>
+
+<td>
+
+<button
+type="button"
+class="btn btn-danger"
+onclick="removeItem(this)">
+
+<i class="fa fa-trash"></i>
+
+</button>
+
+</td>
+
+</tr>
+
+`);
+
+}
+
+function removeItem(btn){
+
+    let rows=document.querySelectorAll("#itemTable tbody tr");
+
+    if(rows.length>1){
+
+        btn.closest("tr").remove();
+
+        updateGrandTotal();
+
+    }
+
+}
+
+function calculateRow(element){
+
+    let row=element.closest("tr");
+
+    let qty=parseFloat(row.querySelector(".quantity").value)||0;
+
+    let price=parseFloat(row.querySelector(".price").value)||0;
+
+    let total=qty*price;
+
+    row.querySelector(".total").value=total.toFixed(2);
+
+    updateGrandTotal();
+
+}
+
+function updateGrandTotal(){
+
+    let consultation=parseFloat(document.getElementById("consultation_fee").value)||0;
+
+    let medicine=parseFloat(document.getElementById("medicine_total").value)||0;
+
+    let lab=parseFloat(document.getElementById("lab_total").value)||0;
+
+    let other=parseFloat(document.getElementById("other_charges").value)||0;
+
+    let discount=parseFloat(document.getElementById("discount").value)||0;
+
+    let tax=parseFloat(document.getElementById("tax").value)||0;
+
+    let itemTotal=0;
+
+    document.querySelectorAll(".total").forEach(function(item){
+
+        itemTotal+=parseFloat(item.value)||0;
+
+    });
+
+    let grand=
+
+        consultation
+        +medicine
+        +lab
+        +other
+        +itemTotal
+        +tax
+        -discount;
+
+    document.getElementById("grand_total").value=grand.toFixed(2);
+
+}
+
+document.querySelectorAll(
+
+"#consultation_fee,#medicine_total,#lab_total,#other_charges,#discount,#tax"
+
+).forEach(function(input){
+
+    input.addEventListener(
+
+        "input",
+
+        updateGrandTotal
+
+    );
+
+});
+
+updateGrandTotal();
+
+</script>
+
+{% endblock %}

@@ -25,6 +25,7 @@ def create_app():
     from models.patient import Patient
 
 
+
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(User, int(user_id))
@@ -35,6 +36,15 @@ def create_app():
     from routes.department import department
     from routes.doctor import doctor
     from routes.patient import patient
+    from routes.appointmen import appointment
+    from routes.prescription import prescription
+    from routes.billing import billing
+
+
+
+
+
+
 
 
 
@@ -43,6 +53,12 @@ def create_app():
     app.register_blueprint(department)
     app.register_blueprint(doctor)
     app.register_blueprint(patient)
+    app.register_blueprint(appointment)
+    app.register_blueprint(prescription)
+    app.register_blueprint(billing)
+
+
+
 
     # Home Page
     @app.route("/")

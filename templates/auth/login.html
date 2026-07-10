@@ -8,6 +8,8 @@ Login
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 {% endblock %}
 
+
+
 {% block content %}
 
 <div class="auth-container">
@@ -162,5 +164,7 @@ Login
 {% endblock %}
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+{% include "layout/print_disclaimer.html" %}
 
 {% block js %}{% endblock %}

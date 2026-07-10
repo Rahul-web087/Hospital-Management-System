@@ -1,0 +1,431 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Edit Prescription
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h3 class="fw-bold">
+
+            <i class="fa-solid fa-file-pen text-warning"></i>
+
+            Edit Prescription
+
+        </h3>
+
+        <a href="{{ url_for('prescription.list_prescriptions') }}"
+           class="btn btn-secondary">
+
+            <i class="fa fa-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <!-- Appointment -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Appointment
+                        </label>
+
+                        <select name="appointment_id"
+                                class="form-select"
+                                required>
+
+                            {% for appointment in appointments %}
+
+                            <option value="{{ appointment.id }}"
+                                {% if appointment.id==prescription.appointment_id %}selected{% endif %}>
+
+                                {{ appointment.appointment_no }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Patient -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Patient
+                        </label>
+
+                        <select name="patient_id"
+                                class="form-select"
+                                required>
+
+                            {% for patient in patients %}
+
+                            <option value="{{ patient.id }}"
+                                {% if patient.id==prescription.patient_id %}selected{% endif %}>
+
+                                {{ patient.patient_code }}
+                                -
+                                {{ patient.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Doctor -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Doctor
+                        </label>
+
+                        <select name="doctor_id"
+                                class="form-select"
+                                required>
+
+                            {% for doctor in doctors %}
+
+                            <option value="{{ doctor.id }}"
+                                {% if doctor.id==prescription.doctor_id %}selected{% endif %}>
+
+                                Dr. {{ doctor.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- Diagnosis -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Diagnosis
+
+                        </label>
+
+                        <textarea
+                            name="diagnosis"
+                            rows="3"
+                            class="form-control"
+                            required>{{ prescription.diagnosis }}</textarea>
+
+                    </div>
+
+                    <!-- Symptoms -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Symptoms
+
+                        </label>
+
+                        <textarea
+                            name="symptoms"
+                            rows="3"
+                            class="form-control">{{ prescription.symptoms }}</textarea>
+
+                    </div>
+
+                    <!-- Follow Up -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Follow Up Date
+
+                        </label>
+
+                        <input
+                            type="date"
+                            name="follow_up_date"
+                            class="form-control"
+                            value="{{ prescription.follow_up_date }}">
+
+                    </div>
+
+                    <!-- Status -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Status
+
+                        </label>
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="Active"
+                                {% if prescription.status=="Active" %}selected{% endif %}>
+                                Active
+                            </option>
+
+                            <option value="Completed"
+                                {% if prescription.status=="Completed" %}selected{% endif %}>
+                                Completed
+                            </option>
+
+                            <option value="Cancelled"
+                                {% if prescription.status=="Cancelled" %}selected{% endif %}>
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- Notes -->
+
+                    <div class="col-12 mb-4">
+
+                        <label class="form-label">
+
+                            Doctor Notes
+
+                        </label>
+
+                        <textarea
+                            name="notes"
+                            rows="4"
+                            class="form-control">{{ prescription.notes }}</textarea>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h5>
+
+                        Medicines
+
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="addMedicine()">
+
+                        <i class="fa fa-plus"></i>
+
+                        Add Medicine
+
+                    </button>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered"
+                           id="medicineTable">
+
+                        <thead class="table-light">
+
+                        <tr>
+
+                            <th>Medicine</th>
+
+                            <th>Dosage</th>
+
+                            <th>Frequency</th>
+
+                            <th>Duration</th>
+
+                            <th>Instructions</th>
+
+                            <th width="60"></th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {% for medicine in medicines %}
+
+                        <tr>
+
+                            <td>
+
+                                <input
+                                    name="medicine_name[]"
+                                    class="form-control"
+                                    value="{{ medicine.medicine_name }}"
+                                    required>
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    name="dosage[]"
+                                    class="form-control"
+                                    value="{{ medicine.dosage }}">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    name="frequency[]"
+                                    class="form-control"
+                                    value="{{ medicine.frequency }}">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    name="duration[]"
+                                    class="form-control"
+                                    value="{{ medicine.duration }}">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    name="instructions[]"
+                                    class="form-control"
+                                    value="{{ medicine.instructions }}">
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    onclick="removeRow(this)">
+
+                                    <i class="fa fa-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <hr>
+
+                <div class="text-end">
+
+                    <button
+                        type="submit"
+                        class="btn btn-warning">
+
+                        <i class="fa fa-save"></i>
+
+                        Update Prescription
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+function addMedicine(){
+
+let table=document.querySelector("#medicineTable tbody");
+
+table.insertAdjacentHTML("beforeend",`
+
+<tr>
+
+<td><input name="medicine_name[]" class="form-control" required></td>
+
+<td><input name="dosage[]" class="form-control"></td>
+
+<td><input name="frequency[]" class="form-control"></td>
+
+<td><input name="duration[]" class="form-control"></td>
+
+<td><input name="instructions[]" class="form-control"></td>
+
+<td>
+
+<button type="button"
+class="btn btn-danger"
+onclick="removeRow(this)">
+
+<i class="fa fa-trash"></i>
+
+</button>
+
+</td>
+
+</tr>
+
+`);
+
+}
+
+function removeRow(btn){
+
+let rows=document.querySelectorAll("#medicineTable tbody tr");
+
+if(rows.length>1){
+
+btn.closest("tr").remove();
+
+}
+
+}
+
+</script>
+
+{% endblock %}

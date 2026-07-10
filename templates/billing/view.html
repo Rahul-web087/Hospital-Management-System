@@ -1,0 +1,494 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+View Invoice
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fa-solid fa-file-invoice-dollar text-primary"></i>
+
+                Invoice Details
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                {{ bill.bill_no }}
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('billing.edit_bill', id=bill.id) }}"
+               class="btn btn-warning">
+
+                <i class="fa fa-edit"></i>
+
+                Edit
+
+            </a>
+
+            <a href="{{ url_for('billing.print_bill', id=bill.id) }}"
+               class="btn btn-success">
+
+                <i class="fa fa-print"></i>
+
+                Print
+
+            </a>
+
+            <a href="{{ url_for('billing.list_bills') }}"
+               class="btn btn-secondary">
+
+                <i class="fa fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Patient & Doctor -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                Patient & Doctor Information
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Invoice No
+
+                            </th>
+
+                            <td>
+
+                                {{ bill.bill_no }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Patient
+
+                            </th>
+
+                            <td>
+
+                                {{ bill.patient.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Patient Code
+
+                            </th>
+
+                            <td>
+
+                                {{ bill.patient.patient_code }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Appointment
+
+                            </th>
+
+                            <td>
+
+                                {{ bill.appointment.appointment_no }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Doctor
+
+                            </th>
+
+                            <td>
+
+                                Dr. {{ bill.doctor.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Department
+
+                            </th>
+
+                            <td>
+
+                                {{ bill.doctor.department.name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Payment Method
+
+                            </th>
+
+                            <td>
+
+                                {{ bill.payment_method }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Status
+
+                            </th>
+
+                            <td>
+
+                                {% if bill.payment_status=="Paid" %}
+
+                                <span class="badge bg-success">
+
+                                    Paid
+
+                                </span>
+
+                                {% elif bill.payment_status=="Pending" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Pending
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Cancelled
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Invoice Items -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-success text-white">
+
+            <h5 class="mb-0">
+
+                Invoice Items
+
+            </h5>
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Item</th>
+
+                    <th>Qty</th>
+
+                    <th>Price</th>
+
+                    <th>Total</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>
+
+                        {{ loop.index }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.item_name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quantity }}
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(item.price) }}
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(item.total) }}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Bill Summary -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-info text-white">
+
+            <h5 class="mb-0">
+
+                Bill Summary
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+
+                    <th>
+
+                        Consultation Fee
+
+                    </th>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(bill.consultation_fee) }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Medicine Charges
+
+                    </th>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(bill.medicine_total) }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Laboratory Charges
+
+                    </th>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(bill.lab_total) }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Other Charges
+
+                    </th>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(bill.other_charges) }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Discount
+
+                    </th>
+
+                    <td class="text-danger">
+
+                        - ₹ {{ "%.2f"|format(bill.discount) }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Tax
+
+                    </th>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(bill.tax) }}
+
+                    </td>
+
+                </tr>
+
+                <tr class="table-primary">
+
+                    <th>
+
+                        Grand Total
+
+                    </th>
+
+                    <th>
+
+                        ₹ {{ "%.2f"|format(bill.grand_total) }}
+
+                    </th>
+
+                </tr>
+
+                <tr>
+
+                    <th>
+
+                        Remarks
+
+                    </th>
+
+                    <td>
+
+                        {{ bill.remarks or "No Remarks" }}
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

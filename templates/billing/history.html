@@ -1,10 +1,353 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/base.html" %}
 
-</body>
-</html>
+{% block title %}
+Billing History
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fa-solid fa-chart-line text-primary"></i>
+
+                Billing History
+
+            </h3>
+
+            <p class="text-muted">
+
+                Payment summary and recent billing activity
+
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('billing.list_bills') }}"
+           class="btn btn-primary">
+
+            <i class="fa fa-file-invoice"></i>
+
+            All Invoices
+
+        </a>
+
+    </div>
+
+    <!-- Summary Cards -->
+
+    <div class="row">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="card shadow border-0 bg-primary text-white">
+
+                <div class="card-body">
+
+                    <h6>Total Bills</h6>
+
+                    <h2>{{ bills|length }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="card shadow border-0 bg-success text-white">
+
+                <div class="card-body">
+
+                    <h6>Paid Bills</h6>
+
+                    <h2>
+
+                        {{ bills|selectattr("payment_status","equalto","Paid")|list|length }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="card shadow border-0 bg-warning text-dark">
+
+                <div class="card-body">
+
+                    <h6>Pending Bills</h6>
+
+                    <h2>
+
+                        {{ bills|selectattr("payment_status","equalto","Pending")|list|length }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="card shadow border-0 bg-danger text-white">
+
+                <div class="card-body">
+
+                    <h6>Cancelled Bills</h6>
+
+                    <h2>
+
+                        {{ bills|selectattr("payment_status","equalto","Cancelled")|list|length }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Revenue -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+
+                        Total Revenue
+
+                    </h5>
+
+                    <h2 class="text-success">
+
+                        ₹
+
+                        {{
+
+                        "%.2f"|format(
+
+                        bills
+
+                        |selectattr("payment_status","equalto","Paid")
+
+                        |sum(attribute="grand_total")
+
+                        )
+
+                        }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+
+                        Pending Amount
+
+                    </h5>
+
+                    <h2 class="text-warning">
+
+                        ₹
+
+                        {{
+
+                        "%.2f"|format(
+
+                        bills
+
+                        |selectattr("payment_status","equalto","Pending")
+
+                        |sum(attribute="grand_total")
+
+                        )
+
+                        }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- History Table -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                Recent Billing History
+
+            </h5>
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                <tr>
+
+                    <th>Invoice</th>
+
+                    <th>Patient</th>
+
+                    <th>Doctor</th>
+
+                    <th>Total</th>
+
+                    <th>Method</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for bill in bills %}
+
+                <tr>
+
+                    <td>
+
+                        {{ bill.bill_no }}
+
+                    </td>
+
+                    <td>
+
+                        {{ bill.patient.user.full_name }}
+
+                    </td>
+
+                    <td>
+
+                        Dr. {{ bill.doctor.user.full_name }}
+
+                    </td>
+
+                    <td>
+
+                        ₹ {{ "%.2f"|format(bill.grand_total) }}
+
+                    </td>
+
+                    <td>
+
+                        {{ bill.payment_method }}
+
+                    </td>
+
+                    <td>
+
+                        {% if bill.payment_status=="Paid" %}
+
+                        <span class="badge bg-success">
+
+                            Paid
+
+                        </span>
+
+                        {% elif bill.payment_status=="Pending" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            Pending
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Cancelled
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ bill.created_at.strftime("%d-%m-%Y") }}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7"
+                        class="text-center py-5">
+
+                        <i class="fa-solid fa-file-circle-xmark fa-4x text-secondary mb-3"></i>
+
+                        <h5>
+
+                            No Billing History Found
+
+                        </h5>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
