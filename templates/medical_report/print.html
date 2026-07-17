@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Medical Report
+    </title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#fff;
+            color:#000;
+            padding:30px;
+            font-size:14px;
+        }
+
+        @page{
+            size:A4;
+            margin:15mm;
+        }
+
+        .hospital-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:3px solid #0d6efd;
+            padding-bottom:15px;
+            margin-bottom:25px;
+        }
+
+        .hospital-logo img{
+            width:90px;
+            height:90px;
+            object-fit:contain;
+        }
+
+        .hospital-info{
+            text-align:center;
+            flex:1;
+        }
+
+        .hospital-info h1{
+            font-size:30px;
+            color:#0d6efd;
+            margin-bottom:8px;
+        }
+
+        .hospital-info p{
+            font-size:14px;
+            line-height:1.6;
+        }
+
+        .report-title{
+            text-align:center;
+            margin:25px 0;
+        }
+
+        .report-title h2{
+            border-bottom:2px solid #000;
+            display:inline-block;
+            padding-bottom:8px;
+        }
+
+        .section{
+            margin-bottom:25px;
+        }
+
+        .section-title{
+            background:#0d6efd;
+            color:#fff;
+            padding:8px 12px;
+            font-size:16px;
+            font-weight:bold;
+            margin-bottom:10px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        td{
+            padding:8px;
+            border:1px solid #ddd;
+        }
+
+        td:first-child{
+            width:220px;
+            font-weight:bold;
+            background:#f5f5f5;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- Hospital Header -->
+
+<div class="hospital-header">
+
+    <div class="hospital-logo">
+
+        <img src="{{ url_for('static', filename='images/logo/logo.png') }}"
+             alt="Hospital Logo">
+
+    </div>
+
+    <div class="hospital-info">
+
+        <h1>
+
+            Hospital Management System
+
+        </h1>
+
+        <p>
+
+            R N  Hospital, Tumusinga, Dhenkanal, Odisha
+
+            <br>
+
+            Phone : +91-7847983645
+
+            <br>
+
+            Email : hospitalmanagement491@gmail.com
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- Title -->
+
+<div class="report-title">
+
+    <h2>
+
+        Medical Report
+
+    </h2>
+
+</div>
+
+<!-- Patient Information -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Patient Information
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>Patient Code</td>
+
+            <td>{{ report.patient.patient_code }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Patient Name</td>
+
+            <td>{{ report.patient.user.full_name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Phone</td>
+
+            <td>{{ report.patient.user.phone }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Blood Group</td>
+
+            <td>{{ report.patient.blood_group }}</td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+<!-- Doctor Information -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Doctor Information
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>Doctor Code</td>
+
+            <td>{{ report.doctor.doctor_code }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Doctor Name</td>
+
+            <td>Dr. {{ report.doctor.user.full_name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Department</td>
+
+            <td>{{ report.doctor.department.name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Specialization</td>
+
+            <td>{{ report.doctor.specialization }}</td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+<!-- Appointment Information -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Appointment Information
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>Appointment No</td>
+
+            <td>{{ report.appointment.appointment_no }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Appointment Date</td>
+
+            <td>{{ report.appointment.appointment_date.strftime('%d-%m-%Y') }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Appointment Time</td>
+
+            <td>{{ report.appointment.appointment_time }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Visit Type</td>
+
+            <td>{{ report.appointment.visit_type }}</td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+<!-- Report Information -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Report Information
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>Report Number</td>
+
+            <td>{{ report.report_no }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Report Type</td>
+
+            <td>{{ report.report_type }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Report Date</td>
+
+            <td>{{ report.report_date.strftime('%d-%m-%Y') }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Status</td>
+
+            <td>{{ report.status }}</td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+<!-- Findings -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Findings
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>
+
+                {{ report.findings or "No findings available." }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+<!-- Diagnosis -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Diagnosis
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>
+
+                {{ report.diagnosis or "No diagnosis available." }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+<!-- Remarks -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        Remarks
+
+    </div>
+
+    <table>
+
+        <tr>
+
+            <td>
+
+                {{ report.remarks or "No remarks available." }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+<!-- Signatures -->
+
+<div style="margin-top:60px;">
+
+    <table style="border:none;">
+
+        <tr>
+
+            <td style="border:none; width:50%; text-align:left;">
+
+                ___________________________
+
+                <br><br>
+
+                <strong>
+
+                    Patient Signature
+
+                </strong>
+
+            </td>
+
+            <td style="border:none; width:50%; text-align:right;">
+
+                ___________________________
+
+                <br><br>
+
+                <strong>
+
+                    Doctor Signature
+
+                </strong>
+
+                <br>
+
+                Dr. {{ report.doctor.user.full_name }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+<!-- Footer -->
+
+<hr style="margin-top:50px;">
+
+<div style="text-align:center;font-size:12px;color:#666;">
+
+    <p>
+
+        Printed On :
+        {{ report.created_at.strftime('%d-%m-%Y %I:%M %p') }}
+
+    </p>
+
+    <p>
+
+        This is a computer-generated medical report.
+        No signature is required if generated electronically.
+
+    </p>
+
+    <p>
+
+        © {{ report.created_at.year }}
+        Hospital Management System.
+        All Rights Reserved.
+
+    </p>
+
+</div>
+
+
+<script>
+
+window.onload = function(){
+
+    window.print();
+
+};
+
+</script>
+
+
+<style>
+
+@media print{
+
+    body{
+
+        margin:0;
+
+        padding:15px;
+
+    }
+
+    @page{
+
+        size:A4;
+
+        margin:10mm;
+
+    }
+
+}
+
+</style>
+
+</body>
+
+</html>

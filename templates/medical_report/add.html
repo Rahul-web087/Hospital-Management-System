@@ -1,0 +1,445 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Add Medical Report
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+                <i class="fas fa-notes-medical text-primary"></i>
+                Add Medical Report
+            </h3>
+
+            <p class="text-muted mb-0">
+                Create a new patient medical report
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('medical_report.list_reports') }}"
+           class="btn btn-secondary">
+
+            <i class="fas fa-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+
+    <form method="POST"
+          enctype="multipart/form-data">
+
+        <!-- Patient Information -->
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+
+                    Patient Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <!-- Patient -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Patient
+
+                        </label>
+
+                        <select
+                            name="patient_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+
+                                Select Patient
+
+                            </option>
+
+                            {% for patient in patients %}
+
+                            <option value="{{ patient.id }}">
+
+                                {{ patient.patient_code }}
+                                -
+                                {{ patient.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Doctor -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Doctor
+
+                        </label>
+
+                        <select
+                            name="doctor_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+
+                                Select Doctor
+
+                            </option>
+
+                            {% for doctor in doctors %}
+
+                            <option value="{{ doctor.id }}">
+
+                                Dr.
+                                {{ doctor.user.full_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Appointment -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+
+                            Appointment
+
+                        </label>
+
+                        <select
+                            name="appointment_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+
+                                Select Appointment
+
+                            </option>
+
+                            {% for appointment in appointments %}
+
+                            <option value="{{ appointment.id }}">
+
+                                {{ appointment.appointment_no }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <!-- Report Information -->
+
+<div class="card shadow border-0 mb-4">
+
+    <div class="card-header bg-success text-white">
+
+        <h5 class="mb-0">
+
+            Report Information
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <!-- Report Type -->
+
+            <div class="col-md-4 mb-3">
+
+                <label class="form-label">
+
+                    Report Type
+
+                </label>
+
+                <select
+                    name="report_type"
+                    class="form-select"
+                    required>
+
+                    <option value="">
+                        Select Report Type
+                    </option>
+
+                    <option>Blood Test</option>
+
+                    <option>Urine Test</option>
+
+                    <option>X-Ray</option>
+
+                    <option>MRI</option>
+
+                    <option>CT Scan</option>
+
+                    <option>ECG</option>
+
+                    <option>Ultrasound</option>
+
+                    <option>COVID Test</option>
+
+                    <option>Thyroid Test</option>
+
+                    <option>Liver Function Test</option>
+
+                    <option>Kidney Function Test</option>
+
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Report Date -->
+
+            <div class="col-md-4 mb-3">
+
+                <label class="form-label">
+
+                    Report Date
+
+                </label>
+
+                <input
+                    type="date"
+                    name="report_date"
+                    class="form-control"
+                    required>
+
+            </div>
+
+
+            <!-- Status -->
+
+            <div class="col-md-4 mb-3">
+
+                <label class="form-label">
+
+                    Status
+
+                </label>
+
+                <select
+                    name="status"
+                    class="form-select">
+
+                    <option value="Pending">
+
+                        Pending
+
+                    </option>
+
+                    <option value="Completed">
+
+                        Completed
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Upload Report -->
+
+            <div class="col-md-12 mb-3">
+
+                <label class="form-label">
+
+                    Upload Report (PDF / JPG / PNG)
+
+                </label>
+
+                <input
+                    type="file"
+                    name="report_file"
+                    class="form-control"
+                    accept=".pdf,.jpg,.jpeg,.png">
+
+                <small class="text-muted">
+
+                    Supported formats:
+                    PDF,
+                    JPG,
+                    JPEG,
+                    PNG
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+        <!-- Report Details -->
+
+<div class="card shadow border-0 mb-4">
+
+    <div class="card-header bg-info text-white">
+
+        <h5 class="mb-0">
+
+            Report Details
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <!-- Findings -->
+
+            <div class="col-md-12 mb-3">
+
+                <label class="form-label">
+
+                    Findings
+
+                </label>
+
+                <textarea
+                    name="findings"
+                    rows="4"
+                    class="form-control"
+                    placeholder="Enter report findings..."
+                    required></textarea>
+
+            </div>
+
+            <!-- Diagnosis -->
+
+            <div class="col-md-12 mb-3">
+
+                <label class="form-label">
+
+                    Diagnosis
+
+                </label>
+
+                <textarea
+                    name="diagnosis"
+                    rows="4"
+                    class="form-control"
+                    placeholder="Enter diagnosis..."
+                    required></textarea>
+
+            </div>
+
+            <!-- Remarks -->
+
+            <div class="col-md-12 mb-3">
+
+                <label class="form-label">
+
+                    Remarks
+
+                </label>
+
+                <textarea
+                    name="remarks"
+                    rows="3"
+                    class="form-control"
+                    placeholder="Additional remarks (Optional)"></textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Buttons -->
+
+<div class="text-end mb-4">
+
+    <a href="{{ url_for('medical_report.list_reports') }}"
+       class="btn btn-secondary">
+
+        <i class="fas fa-times"></i>
+
+        Cancel
+
+    </a>
+
+    <button
+        type="reset"
+        class="btn btn-warning">
+
+        <i class="fas fa-rotate-left"></i>
+
+        Reset
+
+    </button>
+
+    <button
+        type="submit"
+        class="btn btn-primary">
+
+        <i class="fas fa-save"></i>
+
+        Save Report
+
+    </button>
+
+</div>
+
+</form>
+
+</div>
+
+{% endblock %}

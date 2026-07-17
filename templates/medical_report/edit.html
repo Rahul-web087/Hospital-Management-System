@@ -1,0 +1,179 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Edit Medical Report
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold">
+                <i class="fas fa-edit text-primary"></i>
+                Edit Medical Report
+            </h3>
+            <p class="text-muted mb-0">Update existing medical report information</p>
+        </div>
+        <a href="{{ url_for('medical_report.list_reports') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+
+        <!-- Patient Information -->
+        <div class="card shadow border-0 mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Patient Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Patient -->
+                    <div class="col-md-4 mb-3">
+                        <label for="patient_id" class="form-label">Patient</label>
+                        <select name="patient_id" id="patient_id" class="form-select" required>
+                            {% for patient in patients %}
+                            <option value="{{ patient.id }}" {% if report.patient_id == patient.id %}selected{% endif %}>
+                                {{ patient.patient_code }} - {{ patient.user.full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Doctor -->
+                    <div class="col-md-4 mb-3">
+                        <label for="doctor_id" class="form-label">Doctor</label>
+                        <select name="doctor_id" id="doctor_id" class="form-select" required>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}" {% if report.doctor_id == doctor.id %}selected{% endif %}>
+                                Dr. {{ doctor.user.full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Appointment -->
+                    <div class="col-md-4 mb-3">
+                        <label for="appointment_id" class="form-label">Appointment</label>
+                        <select name="appointment_id" id="appointment_id" class="form-select" required>
+                            {% for appointment in appointments %}
+                            <option value="{{ appointment.id }}" {% if report.appointment_id == appointment.id %}selected{% endif %}>
+                                {{ appointment.appointment_no }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Information -->
+        <div class="card shadow border-0 mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Report Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Report Type -->
+                    <div class="col-md-4 mb-3">
+                        <label for="report_type" class="form-label">Report Type</label>
+                        <select name="report_type" id="report_type" class="form-select" required>
+                            <option value="Blood Test" {% if report.report_type=="Blood Test" %}selected{% endif %}>Blood Test</option>
+                            <option value="Urine Test" {% if report.report_type=="Urine Test" %}selected{% endif %}>Urine Test</option>
+                            <option value="X-Ray" {% if report.report_type=="X-Ray" %}selected{% endif %}>X-Ray</option>
+                            <option value="MRI" {% if report.report_type=="MRI" %}selected{% endif %}>MRI</option>
+                            <option value="CT Scan" {% if report.report_type=="CT Scan" %}selected{% endif %}>CT Scan</option>
+                            <option value="ECG" {% if report.report_type=="ECG" %}selected{% endif %}>ECG</option>
+                            <option value="Ultrasound" {% if report.report_type=="Ultrasound" %}selected{% endif %}>Ultrasound</option>
+                            <option value="COVID Test" {% if report.report_type=="COVID Test" %}selected{% endif %}>COVID Test</option>
+                            <option value="Thyroid Test" {% if report.report_type=="Thyroid Test" %}selected{% endif %}>Thyroid Test</option>
+                            <option value="Liver Function Test" {% if report.report_type=="Liver Function Test" %}selected{% endif %}>Liver Function Test</option>
+                            <option value="Kidney Function Test" {% if report.report_type=="Kidney Function Test" %}selected{% endif %}>Kidney Function Test</option>
+                            <option value="Other" {% if report.report_type=="Other" %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Report Date -->
+                    <div class="col-md-4 mb-3">
+                        <label for="report_date" class="form-label">Report Date</label>
+                        <input type="date" name="report_date" id="report_date" class="form-control"
+                               value="{{ report.report_date.strftime('%Y-%m-%d') }}" required>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-4 mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="Pending" {% if report.status=="Pending" %}selected{% endif %}>Pending</option>
+                            <option value="Completed" {% if report.status=="Completed" %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+
+                    <!-- Current File -->
+                    {% if report.report_file %}
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Current Report File</label><br>
+                        <a href="{{ url_for('static', filename='uploads/reports/' + report.report_file) }}"
+                           target="_blank" class="btn btn-success btn-sm">
+                            <i class="fas fa-file-download"></i> View Current Report
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Upload New File -->
+                    <div class="col-md-12 mb-3">
+                        <label for="report_file" class="form-label">Upload New Report (Optional)</label>
+                        <input type="file" name="report_file" id="report_file" class="form-control"
+                               accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="text-muted">Leave blank to keep the existing report file.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Details -->
+        <div class="card shadow border-0 mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Report Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Findings -->
+                    <div class="col-md-12 mb-3">
+                        <label for="findings" class="form-label">Findings</label>
+                        <textarea name="findings" id="findings" rows="4" class="form-control" required>{{ report.findings }}</textarea>
+                    </div>
+
+                    <!-- Diagnosis -->
+                    <div class="col-md-12 mb-3">
+                        <label for="diagnosis" class="form-label">Diagnosis</label>
+                        <textarea name="diagnosis" id="diagnosis" rows="4" class="form-control" required>{{ report.diagnosis }}</textarea>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="col-md-12 mb-3">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea name="remarks" id="remarks" rows="3" class="form-control">{{ report.remarks }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <a href="{{ url_for('medical_report.list_reports') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button type="reset" class="btn btn-warning">
+                <i class="fas fa-rotate-left"></i> Reset
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update Report
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

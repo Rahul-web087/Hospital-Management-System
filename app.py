@@ -23,6 +23,7 @@ def create_app():
     from models.department import Department
     from models.doctor import Doctor
     from models.patient import Patient
+    from models.medical_report import MedicalReport
 
 
 
@@ -39,6 +40,7 @@ def create_app():
     from routes.appointmen import appointment
     from routes.prescription import prescription
     from routes.billing import billing
+    from routes.medical_report import medical_report
 
 
 
@@ -56,6 +58,8 @@ def create_app():
     app.register_blueprint(appointment)
     app.register_blueprint(prescription)
     app.register_blueprint(billing)
+    app.register_blueprint(medical_report)
+
 
 
 

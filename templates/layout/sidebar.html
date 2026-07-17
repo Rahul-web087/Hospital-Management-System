@@ -2,62 +2,71 @@
 
     <ul>
 
+        <!-- Dashboard -->
         <li>
-            <a href="/" class="active">
+            <a href="{{ url_for('home') }}" class="active">
                 <i class="fas fa-chart-line"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
+        <!-- Patients -->
         <li>
-            <a href="#">
+            <a href="{{ url_for('patient.list_patients') }}">
                 <i class="fas fa-user-injured"></i>
                 <span>Patients</span>
             </a>
         </li>
 
+        <!-- Doctors -->
         <li>
-            <a href="#">
+            <a href="{{ url_for('doctor.list_doctors') }}">
                 <i class="fas fa-user-doctor"></i>
                 <span>Doctors</span>
             </a>
         </li>
 
+        <!-- Departments -->
         <li>
-            <a href="#">
+            <a href="{{ url_for('department.list_departments') }}">
                 <i class="fas fa-building"></i>
                 <span>Departments</span>
             </a>
         </li>
 
+        <!-- Appointments -->
         <li>
-            <a href="#">
+            <a href="{{ url_for('appointment.list_appointments') }}">
                 <i class="fas fa-calendar-check"></i>
                 <span>Appointments</span>
             </a>
         </li>
 
+        <!-- Prescriptions -->
         <li>
-            <a href="#">
+            <a href="{{ url_for('prescription.list_prescriptions') }}">
                 <i class="fas fa-file-prescription"></i>
                 <span>Prescriptions</span>
             </a>
         </li>
 
-        <li>
-            <a href="#">
-                <i class="fas fa-notes-medical"></i>
-                <span>Medical Reports</span>
-            </a>
-        </li>
+        <!-- Medical Reports (Coming Soon) -->
+       <li>
+    <a href="{{ url_for('medical_report.list_reports') }}">
+        <i class="fas fa-notes-medical"></i>
+        <span>Medical Reports</span>
+    </a>
+</li>
 
+        <!-- Billing -->
         <li>
-            <a href="#">
+            <a href="{{ url_for('billing.list_bills') }}">
                 <i class="fas fa-money-check-dollar"></i>
                 <span>Billing</span>
             </a>
         </li>
 
+        <!-- Pharmacy (Coming Soon) -->
         <li>
             <a href="#">
                 <i class="fas fa-pills"></i>
@@ -65,6 +74,7 @@
             </a>
         </li>
 
+        <!-- AI Assistant (Coming Soon) -->
         <li>
             <a href="#">
                 <i class="fas fa-robot"></i>
@@ -72,6 +82,7 @@
             </a>
         </li>
 
+        <!-- Analytics (Coming Soon) -->
         <li>
             <a href="#">
                 <i class="fas fa-chart-pie"></i>
@@ -79,6 +90,7 @@
             </a>
         </li>
 
+        <!-- Settings (Coming Soon) -->
         <li>
             <a href="#">
                 <i class="fas fa-gear"></i>
@@ -86,14 +98,14 @@
             </a>
         </li>
 
+        <!-- Logout -->
         <li class="mt-5">
-            <a href="#" class="text-danger">
+            <a href="{{ url_for('auth.logout') }}" class="text-danger">
                 <i class="fas fa-right-from-bracket"></i>
                 <span>Logout</span>
             </a>
         </li>
 
     </ul>
-
 
 </aside>

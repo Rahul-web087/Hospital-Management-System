@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required
 
 from extensions import db
 from models.user import User
@@ -41,3 +42,22 @@ def register():
         return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html")
+
+# =====================================
+# Logout
+# =====================================
+
+@auth.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    flash(
+        "Logged out successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("auth.login")
+    )

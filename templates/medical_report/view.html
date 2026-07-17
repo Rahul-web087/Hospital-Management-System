@@ -1,0 +1,689 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Medical Report Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fas fa-notes-medical text-primary"></i>
+
+                Medical Report Details
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                View complete medical report information
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('medical_report.edit_report', id=report.id) }}"
+               class="btn btn-primary">
+
+                <i class="fas fa-edit"></i>
+
+                Edit
+
+            </a>
+
+            <a href="{{ url_for('medical_report.print_report', id=report.id) }}"
+               target="_blank"
+               class="btn btn-success">
+
+                <i class="fas fa-print"></i>
+
+                Print
+
+            </a>
+
+            <a href="{{ url_for('medical_report.list_reports') }}"
+               class="btn btn-secondary">
+
+                <i class="fas fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Patient & Doctor Information -->
+
+    <div class="row">
+
+        <!-- Patient Information -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0 mb-4">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-user-injured"></i>
+
+                        Patient Information
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Patient Code
+
+                            </th>
+
+                            <td>
+
+                                {{ report.patient.patient_code }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Patient Name
+
+                            </th>
+
+                            <td>
+
+                                {{ report.patient.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Phone
+
+                            </th>
+
+                            <td>
+
+                                {{ report.patient.user.phone }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Blood Group
+
+                            </th>
+
+                            <td>
+
+                                {{ report.patient.blood_group }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Doctor Information -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0 mb-4">
+
+                <div class="card-header bg-success text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-user-doctor"></i>
+
+                        Doctor Information
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Doctor Code
+
+                            </th>
+
+                            <td>
+
+                                {{ report.doctor.doctor_code }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Doctor Name
+
+                            </th>
+
+                            <td>
+
+                                Dr. {{ report.doctor.user.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Department
+
+                            </th>
+
+                            <td>
+
+                                {{ report.doctor.department.name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Specialization
+
+                            </th>
+
+                            <td>
+
+                                {{ report.doctor.specialization }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Appointment & Report Information -->
+
+<div class="row">
+
+    <!-- Appointment Information -->
+
+    <div class="col-lg-6">
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-info text-white">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-calendar-check"></i>
+
+                    Appointment Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-borderless">
+
+                    <tr>
+
+                        <th width="180">
+
+                            Appointment No
+
+                        </th>
+
+                        <td>
+
+                            {{ report.appointment.appointment_no }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Appointment Date
+
+                        </th>
+
+                        <td>
+
+                            {{ report.appointment.appointment_date.strftime('%d-%m-%Y') }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Appointment Time
+
+                        </th>
+
+                        <td>
+
+                            {{ report.appointment.appointment_time }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Visit Type
+
+                        </th>
+
+                        <td>
+
+                            {{ report.appointment.visit_type }}
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Report Information -->
+
+    <div class="col-lg-6">
+
+        <div class="card shadow border-0 mb-4">
+
+            <div class="card-header bg-warning">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-file-medical"></i>
+
+                    Report Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-borderless">
+
+                    <tr>
+
+                        <th width="180">
+
+                            Report Number
+
+                        </th>
+
+                        <td>
+
+                            <span class="fw-bold text-primary">
+
+                                {{ report.report_no }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Report Type
+
+                        </th>
+
+                        <td>
+
+                            {{ report.report_type }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Report Date
+
+                        </th>
+
+                        <td>
+
+                            {{ report.report_date.strftime('%d-%m-%Y') }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                        <td>
+
+                            {% if report.status=="Completed" %}
+
+                                <span class="badge bg-success">
+
+                                    Completed
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Pending
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Uploaded Report -->
+
+<div class="card shadow border-0 mb-4">
+
+    <div class="card-header bg-secondary text-white">
+
+        <h5 class="mb-0">
+
+            <i class="fas fa-file-arrow-up"></i>
+
+            Uploaded Report
+
+        </h5>
+
+    </div>
+
+    <div class="card-body text-center">
+
+        {% if report.report_file %}
+
+            <a
+                href="{{ url_for('static', filename='uploads/reports/' + report.report_file) }}"
+                target="_blank"
+                class="btn btn-success">
+
+                <i class="fas fa-download"></i>
+
+                View / Download Report
+
+            </a>
+
+        {% else %}
+
+            <div class="alert alert-warning mb-0">
+
+                <i class="fas fa-circle-info"></i>
+
+                No report file uploaded.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+    <!-- Medical Findings -->
+
+<div class="card shadow border-0 mb-4">
+
+    <div class="card-header bg-danger text-white">
+
+        <h5 class="mb-0">
+
+            <i class="fas fa-stethoscope"></i>
+
+            Medical Findings
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="mb-4">
+
+            <h6 class="fw-bold text-primary">
+
+                Findings
+
+            </h6>
+
+            <div class="border rounded p-3 bg-light">
+
+                {{ report.findings or "No findings available." }}
+
+            </div>
+
+        </div>
+
+        <div class="mb-4">
+
+            <h6 class="fw-bold text-success">
+
+                Diagnosis
+
+            </h6>
+
+            <div class="border rounded p-3 bg-light">
+
+                {{ report.diagnosis or "No diagnosis available." }}
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <h6 class="fw-bold text-warning">
+
+                Remarks
+
+            </h6>
+
+            <div class="border rounded p-3 bg-light">
+
+                {{ report.remarks or "No remarks available." }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Doctor Signature -->
+
+<div class="card shadow border-0 mb-4">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <h6>
+
+                    Doctor
+
+                </h6>
+
+                <strong>
+
+                    Dr. {{ report.doctor.user.full_name }}
+
+                </strong>
+
+                <br>
+
+                {{ report.doctor.specialization }}
+
+                <br>
+
+                {{ report.doctor.department.name }}
+
+            </div>
+
+            <div class="col-md-6 text-end">
+
+                <br><br><br>
+
+                _______________________
+
+                <br>
+
+                <strong>
+
+                    Authorized Signature
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Action Buttons -->
+
+<div class="text-end mb-4">
+
+    <a
+        href="{{ url_for('medical_report.list_reports') }}"
+        class="btn btn-secondary">
+
+        <i class="fas fa-arrow-left"></i>
+
+        Back
+
+    </a>
+
+    <a
+        href="{{ url_for('medical_report.edit_report', id=report.id) }}"
+        class="btn btn-primary">
+
+        <i class="fas fa-edit"></i>
+
+        Edit Report
+
+    </a>
+
+    <a
+        href="{{ url_for('medical_report.print_report', id=report.id) }}"
+        target="_blank"
+        class="btn btn-success">
+
+        <i class="fas fa-print"></i>
+
+        Print Report
+
+    </a>
+
+</div>
+
+</div>
+
+{% endblock %}

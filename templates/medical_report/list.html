@@ -1,0 +1,582 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Medical Reports
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3 class="fw-bold">
+                <i class="fas fa-notes-medical text-primary"></i>
+                Medical Reports
+            </h3>
+            <p class="text-muted mb-0">
+                Manage all patient medical reports
+            </p>
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('medical_report.add_report') }}"
+               class="btn btn-primary">
+
+                <i class="fas fa-plus"></i>
+                Add Report
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics Cards -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Total Reports
+                            </small>
+
+                            <h3 class="fw-bold">
+                                {{ reports|length }}
+                            </h3>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-file-medical fa-2x text-primary"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Completed
+                            </small>
+
+                            <h3 class="fw-bold text-success">
+
+                                {{ reports|selectattr('status','equalto','Completed')|list|length }}
+
+                            </h3>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-circle-check fa-2x text-success"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Pending
+                            </small>
+
+                            <h3 class="fw-bold text-warning">
+
+                                {{ reports|selectattr('status','equalto','Pending')|list|length }}
+
+                            </h3>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-clock fa-2x text-warning"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Today's Reports
+                            </small>
+
+                            <h3 class="fw-bold text-info">
+
+                                {{ reports|length }}
+
+                            </h3>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-calendar-day fa-2x text-info"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search & Filter -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-5">
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="form-control"
+                        placeholder="Search by Report No, Patient, Doctor...">
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <a href="{{ url_for('medical_report.pending_reports') }}"
+                       class="btn btn-warning w-100">
+
+                        Pending Reports
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <a href="{{ url_for('medical_report.completed_reports') }}"
+                       class="btn btn-success w-100">
+
+                        Completed
+
+                    </a>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <a href="{{ url_for('medical_report.list_reports') }}"
+                       class="btn btn-secondary w-100">
+
+                        All Reports
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Medical Report Table -->
+
+<div class="card shadow border-0">
+
+    <div class="card-header bg-primary text-white">
+
+        <h5 class="mb-0">
+            Medical Report List
+        </h5>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0" id="reportTable">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Report No</th>
+
+                        <th>Patient</th>
+
+                        <th>Doctor</th>
+
+                        <th>Type</th>
+
+                        <th>Date</th>
+
+                        <th>Status</th>
+
+                        <th width="230">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% if reports %}
+
+                    {% for report in reports %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+                        <td>
+
+                            <span class="fw-bold text-primary">
+                                {{ report.report_no }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ report.patient.user.full_name }}
+
+                        </td>
+
+                        <td>
+
+                            Dr.
+                            {{ report.doctor.user.full_name }}
+
+                        </td>
+
+                        <td>
+
+                            {{ report.report_type }}
+
+                        </td>
+
+                        <td>
+
+                            {{ report.report_date.strftime("%d-%m-%Y") }}
+
+                        </td>
+
+                        <td>
+
+                            {% if report.status=="Completed" %}
+
+                            <span class="badge bg-success">
+
+                                Completed
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Pending
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('medical_report.view_report',id=report.id) }}"
+                                class="btn btn-sm btn-info">
+
+                                <i class="fas fa-eye"></i>
+
+                            </a>
+
+                            <a
+                                href="{{ url_for('medical_report.edit_report',id=report.id) }}"
+                                class="btn btn-sm btn-primary">
+
+                                <i class="fas fa-edit"></i>
+
+                            </a>
+
+                            <a
+                                href="{{ url_for('medical_report.print_report',id=report.id) }}"
+                                class="btn btn-sm btn-secondary"
+                                target="_blank">
+
+                                <i class="fas fa-print"></i>
+
+                            </a>
+
+                            {% if report.report_file %}
+
+                            <a
+                                href="{{ url_for('static',
+                                filename='uploads/reports/' + report.report_file) }}"
+                                class="btn btn-sm btn-success"
+                                target="_blank">
+
+                                <i class="fas fa-download"></i>
+
+                            </a>
+
+                            {% endif %}
+
+                            <a
+                                href="{{ url_for('medical_report.delete_report',id=report.id) }}"
+                                class="btn btn-sm btn-danger"
+                                onclick="return confirm('Delete this report?')">
+
+                                <i class="fas fa-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="8" class="text-center py-5">
+
+                            <i class="fas fa-notes-medical fa-4x text-muted mb-3"></i>
+
+                            <h5>No Medical Reports Found</h5>
+
+                            <p class="text-muted">
+
+                                Click "Add Report" to create the first medical report.
+
+                            </p>
+
+                            <a
+                                href="{{ url_for('medical_report.add_report') }}"
+                                class="btn btn-primary">
+
+                                <i class="fas fa-plus"></i>
+
+                                Add Report
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+    <!-- Search Script -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("searchInput");
+
+    const table = document.getElementById("reportTable");
+
+    searchInput.addEventListener("keyup", function () {
+
+        const filter = this.value.toLowerCase();
+
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(function (row) {
+
+            const text = row.textContent.toLowerCase();
+
+            if (text.indexOf(filter) > -1) {
+
+                row.style.display = "";
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
+
+
+<!-- Delete Confirmation Modal -->
+
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+
+                <h5 class="modal-title">
+
+                    Delete Medical Report
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="text-center">
+
+                    <i class="fas fa-triangle-exclamation
+                              text-danger
+                              fa-4x
+                              mb-3"></i>
+
+                    <h5>
+
+                        Are you sure?
+
+                    </h5>
+
+                    <p class="text-muted">
+
+                        This medical report will be permanently deleted.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+                <a id="deleteBtn"
+                   href="#"
+                   class="btn btn-danger">
+
+                    Delete
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+
+<script>
+
+function confirmDelete(url){
+
+    document.getElementById("deleteBtn").href = url;
+
+    let modal = new bootstrap.Modal(
+        document.getElementById("deleteModal")
+    );
+
+    modal.show();
+
+}
+
+</script>
+
+{% endblock %}
