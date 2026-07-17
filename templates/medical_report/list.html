@@ -378,14 +378,13 @@ Medical Reports
                             {% if report.report_file %}
 
                             <a
-                                href="{{ url_for('static',
-                                filename='uploads/reports/' + report.report_file) }}"
-                                class="btn btn-sm btn-success"
-                                target="_blank">
+    href="{{ report.report_file }}"
+    class="btn btn-sm btn-success"
+    target="_blank">
 
-                                <i class="fas fa-download"></i>
+    <i class="fas fa-download"></i>
 
-                            </a>
+</a>
 
                             {% endif %}
 

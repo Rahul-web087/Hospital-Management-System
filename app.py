@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import cloudinary_config
 
 from config import Config
 from extensions import db, mail, migrate, login_manager

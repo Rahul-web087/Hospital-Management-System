@@ -1,6 +1,7 @@
 import os
 from uuid import uuid4
 from datetime import datetime
+import cloudinary.uploader
 
 from flask import (
     Blueprint,
@@ -146,38 +147,13 @@ def add_report():
             file = request.files.get("report_file")
 
             if file and file.filename:
-
-                filename = secure_filename(
-                    file.filename
+                result = cloudinary.uploader.upload(
+                    file,
+                    folder="hospital-management/reports",
+                    resource_type="auto"
                 )
 
-                extension = filename.rsplit(
-                    ".",
-                    1
-                )[1].lower()
-
-                filename = f"{uuid4().hex}.{extension}"
-
-                upload_folder = os.path.join(
-                    current_app.root_path,
-                    "static",
-                    "uploads",
-                    "reports"
-                )
-
-                os.makedirs(
-                    upload_folder,
-                    exist_ok=True
-                )
-
-                file.save(
-                    os.path.join(
-                        upload_folder,
-                        filename
-                    )
-                )
-
-                report_file = filename
+                report_file = result["secure_url"]
 
             report = MedicalReport(
 
@@ -305,52 +281,13 @@ def edit_report(id):
             file = request.files.get("report_file")
 
             if file and file.filename:
-
-                if report.report_file:
-
-                    old_file = os.path.join(
-                        current_app.root_path,
-                        "static",
-                        "uploads",
-                        "reports",
-                        report.report_file
-                    )
-
-                    if os.path.exists(old_file):
-
-                        os.remove(old_file)
-
-                filename = secure_filename(
-                    file.filename
+                result = cloudinary.uploader.upload(
+                    file,
+                    folder="hospital-management/reports",
+                    resource_type="auto"
                 )
 
-                extension = filename.rsplit(
-                    ".",
-                    1
-                )[1].lower()
-
-                filename = f"{uuid4().hex}.{extension}"
-
-                upload_folder = os.path.join(
-                    current_app.root_path,
-                    "static",
-                    "uploads",
-                    "reports"
-                )
-
-                os.makedirs(
-                    upload_folder,
-                    exist_ok=True
-                )
-
-                file.save(
-                    os.path.join(
-                        upload_folder,
-                        filename
-                    )
-                )
-
-                report.report_file = filename
+                report.report_file = result["secure_url"]
 
             db.session.commit()
 
@@ -393,18 +330,7 @@ def delete_report(id):
 
     try:
 
-        if report.report_file:
 
-            file_path = os.path.join(
-                current_app.root_path,
-                "static",
-                "uploads",
-                "reports",
-                report.report_file
-            )
-
-            if os.path.exists(file_path):
-                os.remove(file_path)
 
         db.session.delete(report)
         db.session.commit()
