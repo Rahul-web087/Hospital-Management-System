@@ -9,6 +9,30 @@ from extensions import db
 class User(UserMixin, db.Model):
     __tablename__ = "users"
 
+    # ===============================
+    # Role Constants
+    # ===============================
+    ROLE_ADMIN = "admin"
+    ROLE_DOCTOR = "doctor"
+    ROLE_PATIENT = "patient"
+    ROLE_RECEPTIONIST = "receptionist"
+    ROLE_PHARMACIST = "pharmacist"
+    ROLE_LAB = "lab"
+    ROLE_ACCOUNTANT = "accountant"
+
+    ROLES = [
+        ROLE_ADMIN,
+        ROLE_DOCTOR,
+        ROLE_PATIENT,
+        ROLE_RECEPTIONIST,
+        ROLE_PHARMACIST,
+        ROLE_LAB,
+        ROLE_ACCOUNTANT
+    ]
+
+    # ===============================
+    # Columns
+    # ===============================
     id = db.Column(db.Integer, primary_key=True)
 
     full_name = db.Column(db.String(100), nullable=False)
@@ -20,7 +44,7 @@ class User(UserMixin, db.Model):
     role = db.Column(
         db.String(20),
         nullable=False,
-        default="patient"
+        default=ROLE_PATIENT
     )
 
     phone = db.Column(db.String(15))
@@ -57,7 +81,9 @@ class User(UserMixin, db.Model):
         onupdate=datetime.utcnow
     )
 
+    # ===============================
     # Relationships
+    # ===============================
     doctor = db.relationship(
         "Doctor",
         back_populates="user",
@@ -70,6 +96,9 @@ class User(UserMixin, db.Model):
         uselist=False
     )
 
+    # ===============================
+    # Password Methods
+    # ===============================
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -79,5 +108,39 @@ class User(UserMixin, db.Model):
             password
         )
 
+    # ===============================
+    # Role Helpers
+    # ===============================
+    @property
+    def is_admin(self):
+        return self.role == self.ROLE_ADMIN
+
+    @property
+    def is_doctor(self):
+        return self.role == self.ROLE_DOCTOR
+
+    @property
+    def is_patient(self):
+        return self.role == self.ROLE_PATIENT
+
+    @property
+    def is_receptionist(self):
+        return self.role == self.ROLE_RECEPTIONIST
+
+    @property
+    def is_pharmacist(self):
+        return self.role == self.ROLE_PHARMACIST
+
+    @property
+    def is_lab(self):
+        return self.role == self.ROLE_LAB
+
+    @property
+    def is_accountant(self):
+        return self.role == self.ROLE_ACCOUNTANT
+
+    def has_role(self, *roles):
+        return self.role in roles
+
     def __repr__(self):
-        return f"<User {self.email}>"
+        return f"<User {self.email} ({self.role})>"
