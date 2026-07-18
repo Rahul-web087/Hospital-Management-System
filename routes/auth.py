@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from extensions import db
 from models.user import User
+from models.patient import Patient
 
 auth = Blueprint("auth", __name__)
 
@@ -104,6 +105,28 @@ def register():
         user.set_password(password)
 
         db.session.add(user)
+        db.session.commit()
+
+        patient = Patient(
+            user_id=user.id,
+            patient_code=f"PAT{user.id:05d}",
+            blood_group="",
+            emergency_contact="",
+            emergency_phone="",
+            medical_history="",
+            allergies="",
+            insurance_provider="",
+            insurance_number=""
+        )
+
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if password != confirm_password:
+            flash("Passwords do not match.", "danger")
+            return redirect(url_for("auth.register"))
+
+        db.session.add(patient)
         db.session.commit()
 
         flash("Registration successful. Please login.", "success")

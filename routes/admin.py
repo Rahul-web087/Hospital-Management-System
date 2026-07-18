@@ -4,6 +4,7 @@ from sqlalchemy import func
 
 from extensions import db
 
+
 from models.user import User
 from models.patient import Patient
 from models.doctor import Doctor

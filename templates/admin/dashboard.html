@@ -1,0 +1,1518 @@
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- ============================= -->
+    <!-- Dashboard Header -->
+    <!-- ============================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                <i class="fas fa-hospital-alt text-primary me-2"></i>
+
+                Admin Dashboard
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Welcome back,
+
+                <strong>{{ current_user.full_name }}</strong>
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('patient.add_patient') }}"
+               class="btn btn-primary me-2">
+
+                <i class="fas fa-user-plus"></i>
+
+                Add Patient
+
+            </a>
+
+            <a href="{{ url_for('appointment.add_appointment') }}"
+               class="btn btn-success">
+
+                <i class="fas fa-calendar-plus"></i>
+
+                Appointment
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Statistics Cards -->
+    <!-- ============================= -->
+
+    <div class="row g-4">
+
+        <!-- Patients -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Total Patients
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_patients }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-user-injured fa-3x text-primary"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Doctors -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Total Doctors
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_doctors }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-user-doctor fa-3x text-success"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Departments -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Departments
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_departments }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-building fa-3x text-warning"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Appointments -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Appointments
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_appointments }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-calendar-check fa-3x text-danger"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Bills -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Bills
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_bills }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-file-invoice-dollar fa-3x text-info"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Revenue -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Revenue
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                ₹{{ "%.2f"|format(total_revenue) }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-indian-rupee-sign fa-3x text-success"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Reports -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Medical Reports
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_reports }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-file-medical fa-3x text-secondary"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Prescriptions -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+
+                                Prescriptions
+
+                            </small>
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ total_prescriptions }}
+
+                            </h2>
+
+                        </div>
+
+                        <div>
+
+                            <i class="fas fa-prescription fa-3x text-primary"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ============================= -->
+    <!-- Charts -->
+    <!-- ============================= -->
+
+    <div class="row mt-5">
+
+        <div class="col-lg-8 mb-4">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+
+                        Monthly Patient Registration
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="patientChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+
+                        Department Distribution
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="departmentChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+<!-- Revenue & Appointment Status -->
+<!-- ===================================== -->
+
+<div class="row">
+
+    <!-- Revenue Chart -->
+
+    <div class="col-lg-8 mb-4">
+
+        <div class="card shadow border-0 rounded-4">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-chart-bar text-success me-2"></i>
+
+                    Monthly Revenue
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <canvas id="revenueChart" height="120"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Appointment Status -->
+
+    <div class="col-lg-4 mb-4">
+
+        <div class="card shadow border-0 rounded-4">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-calendar-check text-primary me-2"></i>
+
+                    Appointment Status
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <canvas id="appointmentStatusChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- Recent Patients -->
+<!-- ===================================== -->
+
+<div class="card shadow border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white d-flex justify-content-between">
+
+        <h5 class="mb-0">
+
+            <i class="fas fa-user-injured text-primary me-2"></i>
+
+            Recent Patients
+
+        </h5>
+
+        <a href="{{ url_for('patient.list_patients') }}"
+           class="btn btn-sm btn-outline-primary">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+
+                <tr>
+
+                    <th>Patient Code</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Blood Group</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for patient in recent_patients %}
+
+                <tr>
+
+                    <td>{{ patient.patient_code }}</td>
+
+                    <td>{{ patient.user.full_name }}</td>
+
+                    <td>{{ patient.user.gender }}</td>
+
+                    <td>{{ patient.user.phone }}</td>
+
+                    <td>{{ patient.blood_group or "-" }}</td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center">
+
+                        No Patients Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- Recent Doctors -->
+<!-- ===================================== -->
+
+<div class="card shadow border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white d-flex justify-content-between">
+
+        <h5 class="mb-0">
+
+            <i class="fas fa-user-doctor text-success me-2"></i>
+
+            Recent Doctors
+
+        </h5>
+
+        <a href="{{ url_for('doctor.list_doctors') }}"
+           class="btn btn-sm btn-outline-success">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+
+                <tr>
+
+                    <th>Doctor Code</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Specialization</th>
+                    <th>Experience</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for doctor in recent_doctors %}
+
+                <tr>
+
+                    <td>{{ doctor.doctor_code }}</td>
+
+                    <td>{{ doctor.user.full_name }}</td>
+
+                    <td>{{ doctor.department.name }}</td>
+
+                    <td>{{ doctor.specialization }}</td>
+
+                    <td>{{ doctor.experience }} Years</td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center">
+
+                        No Doctors Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+    <!-- ===================================== -->
+<!-- Recent Appointments -->
+<!-- ===================================== -->
+
+<div class="card shadow border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+            <i class="fas fa-calendar-check text-primary me-2"></i>
+            Recent Appointments
+        </h5>
+
+        <a href="{{ url_for('appointment.list_appointments') }}"
+           class="btn btn-sm btn-outline-primary">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                <tr>
+
+                    <th>Appointment No</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Visit</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for appointment in recent_appointments %}
+
+                <tr>
+
+                    <td>{{ appointment.appointment_no }}</td>
+
+                    <td>{{ appointment.patient.user.full_name }}</td>
+
+                    <td>{{ appointment.doctor.user.full_name }}</td>
+
+                    <td>{{ appointment.appointment_date }}</td>
+
+                    <td>{{ appointment.appointment_time }}</td>
+
+                    <td>{{ appointment.visit_type }}</td>
+
+                    <td>
+
+                        {% if appointment.status == "Completed" %}
+
+                        <span class="badge bg-success">
+
+                            {{ appointment.status }}
+
+                        </span>
+
+                        {% elif appointment.status == "Pending" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            {{ appointment.status }}
+
+                        </span>
+
+                        {% elif appointment.status == "Cancelled" %}
+
+                        <span class="badge bg-danger">
+
+                            {{ appointment.status }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            {{ appointment.status }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7" class="text-center text-muted">
+
+                        No Appointments Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- Recent Bills -->
+<!-- ===================================== -->
+
+<div class="card shadow border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            <i class="fas fa-file-invoice-dollar text-success me-2"></i>
+
+            Recent Bills
+
+        </h5>
+
+        <a href="{{ url_for('billing.list_bills') }}"
+           class="btn btn-sm btn-outline-success">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                <tr>
+
+                    <th>Bill No</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Method</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for bill in recent_bills %}
+
+                <tr>
+
+                    <td>{{ bill.bill_no }}</td>
+
+                    <td>{{ bill.patient.user.full_name }}</td>
+
+                    <td>{{ bill.doctor.user.full_name }}</td>
+
+                    <td>
+
+                        ₹{{ "%.2f"|format(bill.grand_total) }}
+
+                    </td>
+
+                    <td>
+
+                        {% if bill.payment_status == "Paid" %}
+
+                        <span class="badge bg-success">
+
+                            {{ bill.payment_status }}
+
+                        </span>
+
+                        {% elif bill.payment_status == "Pending" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            {{ bill.payment_status }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            {{ bill.payment_status }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ bill.payment_method }}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center text-muted">
+
+                        No Bills Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+    <!-- ===================================== -->
+<!-- Recent Medical Reports -->
+<!-- ===================================== -->
+
+<div class="card shadow border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+            <i class="fas fa-file-medical text-danger me-2"></i>
+            Recent Medical Reports
+        </h5>
+
+        <a href="{{ url_for('medical_report.list_reports') }}"
+           class="btn btn-sm btn-outline-danger">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                <tr>
+
+                    <th>Report No</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for report in recent_reports %}
+
+                <tr>
+
+                    <td>{{ report.report_no }}</td>
+
+                    <td>{{ report.patient.user.full_name }}</td>
+
+                    <td>{{ report.doctor.user.full_name }}</td>
+
+                    <td>{{ report.report_type }}</td>
+
+                    <td>{{ report.report_date }}</td>
+
+                    <td>
+
+                        {% if report.status=="Completed" %}
+
+                        <span class="badge bg-success">
+
+                            {{ report.status }}
+
+                        </span>
+
+                        {% elif report.status=="Pending" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            {{ report.status }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            {{ report.status }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center text-muted">
+
+                        No Reports Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- Recent Prescriptions -->
+<!-- ===================================== -->
+
+<div class="card shadow border-0 rounded-4 mb-4">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            <i class="fas fa-prescription text-primary me-2"></i>
+
+            Recent Prescriptions
+
+        </h5>
+
+        <a href="{{ url_for('prescription.list_prescriptions') }}"
+           class="btn btn-sm btn-outline-primary">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                <tr>
+
+                    <th>Prescription No</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Follow Up</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for prescription in recent_prescriptions %}
+
+                <tr>
+
+                    <td>{{ prescription.prescription_no }}</td>
+
+                    <td>{{ prescription.patient.user.full_name }}</td>
+
+                    <td>{{ prescription.doctor.user.full_name }}</td>
+
+                    <td>
+
+                        {{ prescription.follow_up_date or "-" }}
+
+                    </td>
+
+                    <td>
+
+                        {% if prescription.status=="Active" %}
+
+                        <span class="badge bg-success">
+
+                            {{ prescription.status }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            {{ prescription.status }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center text-muted">
+
+                        No Prescriptions Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- Notifications & Quick Actions -->
+<!-- ===================================== -->
+
+<div class="row">
+
+    <!-- Notifications -->
+
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow border-0 rounded-4 h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-bell text-warning me-2"></i>
+
+                    Notifications
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+                        👨 {{ total_patients }} Registered Patients
+                    </li>
+
+                    <li class="list-group-item">
+                        👨‍⚕️ {{ total_doctors }} Doctors Available
+                    </li>
+
+                    <li class="list-group-item">
+                        📅 {{ pending_appointments }} Pending Appointments
+                    </li>
+
+                    <li class="list-group-item">
+                        💰 {{ pending_bills }} Pending Bills
+                    </li>
+
+                    <li class="list-group-item">
+                        📄 {{ total_reports }} Medical Reports
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Quick Actions -->
+
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow border-0 rounded-4 h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-bolt text-primary me-2"></i>
+
+                    Quick Actions
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3">
+
+                    <div class="col-6">
+
+                        <a href="{{ url_for('patient.add_patient') }}"
+                           class="btn btn-primary w-100">
+
+                            <i class="fas fa-user-plus"></i><br>
+
+                            Add Patient
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a href="{{ url_for('doctor.add_doctor') }}"
+                           class="btn btn-success w-100">
+
+                            <i class="fas fa-user-doctor"></i><br>
+
+                            Add Doctor
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a href="{{ url_for('appointment.add_appointment') }}"
+                           class="btn btn-warning w-100">
+
+                            <i class="fas fa-calendar-plus"></i><br>
+
+                            Appointment
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a href="{{ url_for('billing.create_bill') }}"
+                           class="btn btn-danger w-100">
+
+                            <i class="fas fa-file-invoice"></i><br>
+
+                            Billing
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a href="{{ url_for('medical_report.add_report') }}"
+                           class="btn btn-info w-100">
+
+                            <i class="fas fa-file-medical"></i><br>
+
+                            Report
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a href="{{ url_for('department.list_departments') }}"
+                           class="btn btn-secondary w-100">
+
+                            <i class="fas fa-building"></i><br>
+
+                            Departments
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+    <!-- ===================================== -->
+<!-- Chart.js -->
+<!-- ===================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// =====================================
+// Monthly Patient Registration
+// =====================================
+
+new Chart(document.getElementById("patientChart"), {
+
+    type: "line",
+
+    data: {
+
+        labels: {{ patient_labels|tojson }},
+
+        datasets: [{
+
+            label: "Patients",
+
+            data: {{ patient_values|tojson }},
+
+            borderWidth: 3,
+
+            fill: true,
+
+            tension: 0.4
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false
+
+    }
+
+});
+
+
+// =====================================
+// Department Wise Doctors
+// =====================================
+
+new Chart(document.getElementById("departmentChart"), {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: {{ department_labels|tojson }},
+
+        datasets: [{
+
+            data: {{ department_values|tojson }}
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false
+
+    }
+
+});
+
+
+// =====================================
+// Monthly Revenue
+// =====================================
+
+new Chart(document.getElementById("revenueChart"), {
+
+    type: "bar",
+
+    data: {
+
+        labels: {{ revenue_labels|tojson }},
+
+        datasets: [{
+
+            label: "Revenue",
+
+            data: {{ revenue_values|tojson }}
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false
+
+    }
+
+});
+
+
+// =====================================
+// Appointment Status
+// =====================================
+
+new Chart(document.getElementById("appointmentStatusChart"), {
+
+    type: "pie",
+
+    data: {
+
+        labels: [
+
+            "Pending",
+
+            "Completed",
+
+            "Cancelled"
+
+        ],
+
+        datasets: [{
+
+            data: [
+
+                {{ pending_appointments }},
+
+                {{ completed_appointments }},
+
+                {{ cancelled_appointments }}
+
+            ]
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false
+
+    }
+
+});
+
+</script>
+
+
+<!-- ===================================== -->
+<!-- Dashboard Footer -->
+<!-- ===================================== -->
+
+<hr class="mt-5">
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <small class="text-muted">
+
+            Hospital Management System
+            &copy; {{ current_year if current_year else "2026" }}
+
+        </small>
+
+    </div>
+
+    <div class="col-md-6 text-end">
+
+        <small class="text-muted">
+
+           This Hospital Management System is developed solely for educational, academic, and demonstration purposes . It is not intended for real-world clinical, medical, diagnostic, or healthcare operations.
+
+        </small>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% include "layout/print_disclaimer.html" %}
