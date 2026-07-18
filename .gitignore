@@ -25,3 +25,6 @@ static/uploads/
 # OS
 .DS_Store
 Thumbs.db
+
+# Admin login 
+create_admin.py
