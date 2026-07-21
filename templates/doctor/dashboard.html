@@ -1,10 +1,830 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!--{% extends "layout/base.html" %}-->
 
-</body>
-</html>
+<!--{% block title %}-->
+<!--Doctor Dashboard-->
+<!--{% endblock %}-->
+
+<!--{% block content %}-->
+
+<!--<div class="container-fluid">-->
+
+<!--    &lt;!&ndash; Header &ndash;&gt;-->
+<!--    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">-->
+
+<!--        <div>-->
+<!--            <h3 class="fw-bold mb-1">-->
+<!--                <i class="fas fa-user-md text-primary"></i>-->
+<!--                Doctor Dashboard-->
+<!--            </h3>-->
+
+<!--            <p class="text-muted mb-0">-->
+<!--                Welcome,-->
+<!--                <strong>Dr. {{ doctor.user.full_name }}</strong>-->
+<!--            </p>-->
+<!--        </div>-->
+
+<!--        <div>-->
+
+<!--            <a href="{{ url_for('prescription.add_prescription') }}"-->
+<!--               class="btn btn-success">-->
+
+<!--                <i class="fas fa-prescription"></i>-->
+<!--                New Prescription-->
+
+<!--            </a>-->
+
+<!--            <a href="{{ url_for('medical_report.add_report') }}"-->
+<!--               class="btn btn-primary">-->
+
+<!--                <i class="fas fa-file-medical"></i>-->
+<!--                Medical Report-->
+
+<!--            </a>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Statistics &ndash;&gt;-->
+
+<!--    <div class="row g-4">-->
+
+<!--        <div class="col-xl-2 col-md-4">-->
+
+<!--            <div class="card border-0 shadow-sm">-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <i class="fas fa-users fa-2x text-primary mb-3"></i>-->
+
+<!--                    <h2>{{ total_patients }}</h2>-->
+
+<!--                    <p class="text-muted mb-0">-->
+<!--                        My Patients-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="col-xl-2 col-md-4">-->
+
+<!--            <div class="card border-0 shadow-sm">-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <i class="fas fa-calendar-check fa-2x text-success mb-3"></i>-->
+
+<!--                    <h2>{{ total_appointments }}</h2>-->
+
+<!--                    <p class="text-muted mb-0">-->
+<!--                        Appointments-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="col-xl-2 col-md-4">-->
+
+<!--            <div class="card border-0 shadow-sm">-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <i class="fas fa-clock fa-2x text-warning mb-3"></i>-->
+
+<!--                    <h2>{{ pending_appointments }}</h2>-->
+
+<!--                    <p class="text-muted mb-0">-->
+<!--                        Pending-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="col-xl-2 col-md-4">-->
+
+<!--            <div class="card border-0 shadow-sm">-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <i class="fas fa-check-circle fa-2x text-info mb-3"></i>-->
+
+<!--                    <h2>{{ completed_appointments }}</h2>-->
+
+<!--                    <p class="text-muted mb-0">-->
+<!--                        Completed-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="col-xl-2 col-md-4">-->
+
+<!--            <div class="card border-0 shadow-sm">-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <i class="fas fa-file-prescription fa-2x text-danger mb-3"></i>-->
+
+<!--                    <h2>{{ total_prescriptions }}</h2>-->
+
+<!--                    <p class="text-muted mb-0">-->
+<!--                        Prescriptions-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="col-xl-2 col-md-4">-->
+
+<!--            <div class="card border-0 shadow-sm">-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <i class="fas fa-file-medical fa-2x text-secondary mb-3"></i>-->
+
+<!--                    <h2>{{ total_reports }}</h2>-->
+
+<!--                    <p class="text-muted mb-0">-->
+<!--                        Reports-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+<!--    <br>-->
+
+<!--    &lt;!&ndash; Charts &ndash;&gt;-->
+
+<!--    <div class="row">-->
+
+<!--        <div class="col-lg-8">-->
+
+<!--            <div class="card shadow-sm">-->
+
+<!--                <div class="card-header">-->
+
+<!--                    Weekly Appointments-->
+
+<!--                </div>-->
+
+<!--                <div class="card-body">-->
+
+<!--                    <canvas id="appointmentChart"></canvas>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        <div class="col-lg-4">-->
+
+<!--            <div class="card shadow-sm">-->
+
+<!--                <div class="card-header">-->
+
+<!--                    Appointment Status-->
+
+<!--                </div>-->
+
+<!--                <div class="card-body">-->
+
+<!--                    <canvas id="statusChart"></canvas>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+<!--    <br>-->
+<!--        &lt;!&ndash; Profile & Today's Appointments &ndash;&gt;-->
+
+<!--    <div class="row">-->
+
+<!--        &lt;!&ndash; Doctor Profile &ndash;&gt;-->
+
+<!--        <div class="col-lg-4 mb-4">-->
+
+<!--            <div class="card shadow-sm h-100">-->
+
+<!--                <div class="card-header bg-primary text-white">-->
+
+<!--                    <i class="fas fa-user-md"></i>-->
+<!--                    Doctor Profile-->
+
+<!--                </div>-->
+
+<!--                <div class="card-body text-center">-->
+
+<!--                    <img src="{{ url_for('static', filename='uploads/doctors/' ~ doctor.photo) }}"-->
+<!--                         class="rounded-circle mb-3 border"-->
+<!--                         width="130"-->
+<!--                         height="130"-->
+<!--                         style="object-fit:cover;">-->
+
+<!--                    <h4>-->
+<!--                        Dr. {{ doctor.user.full_name }}-->
+<!--                    </h4>-->
+
+<!--                    <span class="badge bg-success">-->
+<!--                        {{ doctor.department.name }}-->
+<!--                    </span>-->
+
+<!--                    <hr>-->
+
+<!--                    <table class="table table-borderless text-start">-->
+
+<!--                        <tr>-->
+<!--                            <th>Doctor Code</th>-->
+<!--                            <td>{{ doctor.doctor_code }}</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Qualification</th>-->
+<!--                            <td>{{ doctor.qualification }}</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Specialization</th>-->
+<!--                            <td>{{ doctor.specialization }}</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Experience</th>-->
+<!--                            <td>{{ doctor.experience }} Years</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Consultation Fee</th>-->
+<!--                            <td>₹ {{ doctor.consultation_fee }}</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Phone</th>-->
+<!--                            <td>{{ doctor.user.phone }}</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Email</th>-->
+<!--                            <td>{{ doctor.user.email }}</td>-->
+<!--                        </tr>-->
+
+<!--                        <tr>-->
+<!--                            <th>Availability</th>-->
+<!--                            <td>-->
+
+<!--                                {{ doctor.available_days }}-->
+
+<!--                                <br>-->
+
+<!--                                {{ doctor.available_time }}-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                    </table>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Today's Appointments &ndash;&gt;-->
+
+<!--        <div class="col-lg-8 mb-4">-->
+
+<!--            <div class="card shadow-sm h-100">-->
+
+<!--                <div class="card-header bg-success text-white">-->
+
+<!--                    <i class="fas fa-calendar-check"></i>-->
+
+<!--                    Today's Appointments-->
+
+<!--                </div>-->
+
+<!--                <div class="table-responsive">-->
+
+<!--                    <table class="table table-hover align-middle mb-0">-->
+
+<!--                        <thead class="table-light">-->
+
+<!--                        <tr>-->
+
+<!--                            <th>Appointment No</th>-->
+<!--                            <th>Patient</th>-->
+<!--                            <th>Date</th>-->
+<!--                            <th>Visit Type</th>-->
+<!--                            <th>Status</th>-->
+
+<!--                        </tr>-->
+
+<!--                        </thead>-->
+
+<!--                        <tbody>-->
+
+<!--                        {% for appointment in today_appointments %}-->
+
+<!--                        <tr>-->
+
+<!--                            <td>-->
+
+<!--                                {{ appointment.appointment_number }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {{ appointment.patient.user.full_name }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {{ appointment.appointment_date.strftime("%d-%m-%Y") }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {{ appointment.visit_type }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {% if appointment.status=="Completed" %}-->
+
+<!--                                <span class="badge bg-success">-->
+
+<!--                                    Completed-->
+
+<!--                                </span>-->
+
+<!--                                {% elif appointment.status=="Pending" %}-->
+
+<!--                                <span class="badge bg-warning">-->
+
+<!--                                    Pending-->
+
+<!--                                </span>-->
+
+<!--                                {% else %}-->
+
+<!--                                <span class="badge bg-danger">-->
+
+<!--                                    Cancelled-->
+
+<!--                                </span>-->
+
+<!--                                {% endif %}-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        {% else %}-->
+
+<!--                        <tr>-->
+
+<!--                            <td colspan="5"-->
+<!--                                class="text-center text-muted">-->
+
+<!--                                No Appointments Found-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        {% endfor %}-->
+
+<!--                        </tbody>-->
+
+<!--                    </table>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+
+<!--    &lt;!&ndash; Recent Prescriptions & Medical Reports &ndash;&gt;-->
+
+<!--    <div class="row">-->
+
+<!--        &lt;!&ndash; Prescriptions &ndash;&gt;-->
+
+<!--        <div class="col-lg-6 mb-4">-->
+
+<!--            <div class="card shadow-sm">-->
+
+<!--                <div class="card-header bg-info text-white">-->
+
+<!--                    Recent Prescriptions-->
+
+<!--                </div>-->
+
+<!--                <div class="table-responsive">-->
+
+<!--                    <table class="table table-hover">-->
+
+<!--                        <thead>-->
+
+<!--                        <tr>-->
+
+<!--                            <th>No.</th>-->
+<!--                            <th>Patient</th>-->
+<!--                            <th>Date</th>-->
+
+<!--                        </tr>-->
+
+<!--                        </thead>-->
+
+<!--                        <tbody>-->
+
+<!--                        {% for prescription in recent_prescriptions %}-->
+
+<!--                        <tr>-->
+
+<!--                            <td>-->
+
+<!--                                {{ prescription.prescription_number }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {{ prescription.patient.user.full_name }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {{ prescription.created_at.strftime("%d-%m-%Y") }}-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        {% else %}-->
+
+<!--                        <tr>-->
+
+<!--                            <td colspan="3"-->
+<!--                                class="text-center">-->
+
+<!--                                No Prescription Found-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        {% endfor %}-->
+
+<!--                        </tbody>-->
+
+<!--                    </table>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+
+
+<!--        &lt;!&ndash; Medical Reports &ndash;&gt;-->
+
+<!--        <div class="col-lg-6 mb-4">-->
+
+<!--            <div class="card shadow-sm">-->
+
+<!--                <div class="card-header bg-danger text-white">-->
+
+<!--                    Recent Medical Reports-->
+
+<!--                </div>-->
+
+<!--                <div class="table-responsive">-->
+
+<!--                    <table class="table table-hover">-->
+
+<!--                        <thead>-->
+
+<!--                        <tr>-->
+
+<!--                            <th>No.</th>-->
+<!--                            <th>Patient</th>-->
+<!--                            <th>Status</th>-->
+
+<!--                        </tr>-->
+
+<!--                        </thead>-->
+
+<!--                        <tbody>-->
+
+<!--                        {% for report in recent_reports %}-->
+
+<!--                        <tr>-->
+
+<!--                            <td>-->
+
+<!--                                {{ report.report_number }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                {{ report.patient.user.full_name }}-->
+
+<!--                            </td>-->
+
+<!--                            <td>-->
+
+<!--                                <span class="badge bg-primary">-->
+
+<!--                                    {{ report.status }}-->
+
+<!--                                </span>-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        {% else %}-->
+
+<!--                        <tr>-->
+
+<!--                            <td colspan="3"-->
+<!--                                class="text-center">-->
+
+<!--                                No Report Found-->
+
+<!--                            </td>-->
+
+<!--                        </tr>-->
+
+<!--                        {% endfor %}-->
+
+<!--                        </tbody>-->
+
+<!--                    </table>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+
+<!--    &lt;!&ndash; Quick Actions &ndash;&gt;-->
+
+<!--    <div class="card shadow-sm mb-4">-->
+
+<!--        <div class="card-header bg-dark text-white">-->
+
+<!--            Quick Actions-->
+
+<!--        </div>-->
+
+<!--        <div class="card-body">-->
+
+<!--            <div class="row g-3">-->
+
+<!--                <div class="col-md-3">-->
+
+<!--                    <a href="{{ url_for('prescription.add_prescription') }}"-->
+<!--                       class="btn btn-success w-100">-->
+
+<!--                        <i class="fas fa-prescription"></i><br>-->
+
+<!--                        New Prescription-->
+
+<!--                    </a>-->
+
+<!--                </div>-->
+
+<!--                <div class="col-md-3">-->
+
+<!--                    <a href="{{ url_for('medical_report.add_report') }}"-->
+<!--                       class="btn btn-primary w-100">-->
+
+<!--                        <i class="fas fa-file-medical"></i><br>-->
+
+<!--                        Medical Report-->
+
+<!--                    </a>-->
+
+<!--                </div>-->
+
+<!--                <div class="col-md-3">-->
+
+<!--                    <a href="{{ url_for('appointment.list_appointments') }}"-->
+<!--                       class="btn btn-warning w-100">-->
+
+<!--                        <i class="fas fa-calendar-check"></i><br>-->
+
+<!--                        Appointments-->
+
+<!--                    </a>-->
+
+<!--                </div>-->
+
+<!--                <div class="col-md-3">-->
+
+<!--                    <a href="{{ url_for('patient.list_patients') }}"-->
+<!--                       class="btn btn-info w-100">-->
+
+<!--                        <i class="fas fa-users"></i><br>-->
+
+<!--                        Patients-->
+
+<!--                    </a>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+<!--    {% endblock %}-->
+
+<!--{% block js %}-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+
+<!--<script>-->
+
+<!--// ============================-->
+<!--// Weekly Appointment Chart-->
+<!--// ============================-->
+
+<!--const appointmentCtx = document.getElementById("appointmentChart");-->
+
+<!--if (appointmentCtx) {-->
+
+<!--    new Chart(appointmentCtx, {-->
+
+<!--        type: "bar",-->
+
+<!--        data: {-->
+
+<!--            labels: [-->
+<!--                "Mon",-->
+<!--                "Tue",-->
+<!--                "Wed",-->
+<!--                "Thu",-->
+<!--                "Fri",-->
+<!--                "Sat",-->
+<!--                "Sun"-->
+<!--            ],-->
+
+<!--            datasets: [{-->
+
+<!--                label: "Appointments",-->
+
+<!--                data: [12, 18, 10, 16, 20, 8, 5],-->
+
+<!--                borderWidth: 1-->
+
+<!--            }]-->
+
+<!--        },-->
+
+<!--        options: {-->
+
+<!--            responsive: true,-->
+
+<!--            maintainAspectRatio: false,-->
+
+<!--            scales: {-->
+
+<!--                y: {-->
+
+<!--                    beginAtZero: true-->
+
+<!--                }-->
+
+<!--            }-->
+
+<!--        }-->
+
+<!--    });-->
+
+<!--}-->
+
+
+
+<!--// ============================-->
+<!--// Appointment Status Chart-->
+<!--// ============================-->
+
+<!--const statusCtx = document.getElementById("statusChart");-->
+
+<!--if (statusCtx) {-->
+
+<!--    new Chart(statusCtx, {-->
+
+<!--        type: "doughnut",-->
+
+<!--        data: {-->
+
+<!--            labels: [-->
+
+<!--                "Pending",-->
+
+<!--                "Completed"-->
+
+<!--            ],-->
+
+<!--            datasets: [{-->
+
+<!--                data: [-->
+
+<!--                    {{ pending_appointments }},-->
+
+<!--                    {{ completed_appointments }}-->
+
+<!--                ]-->
+
+<!--            }]-->
+
+<!--        },-->
+
+<!--        options: {-->
+
+<!--            responsive: true,-->
+
+<!--            maintainAspectRatio: false-->
+
+<!--        }-->
+
+<!--    });-->
+
+<!--}-->
+
+<!--</script>-->
+
+<!--<style>-->
+
+<!--.card{-->
+<!--    border-radius:15px;-->
+<!--}-->
+
+<!--.card-header{-->
+<!--    font-weight:600;-->
+<!--}-->
+
+<!--.table td,-->
+<!--.table th{-->
+<!--    vertical-align:middle;-->
+<!--}-->
+
+<!--canvas{-->
+<!--    height:320px !important;-->
+<!--}-->
+
+<!--.btn{-->
+<!--    border-radius:10px;-->
+<!--}-->
+
+<!--.badge{-->
+<!--    font-size:.80rem;-->
+<!--}-->
+
+<!--</style>-->
+<!--</div>-->
+<!--{% endblock %}-->

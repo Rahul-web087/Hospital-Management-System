@@ -13,6 +13,15 @@ from flask import (
 
 from werkzeug.utils import secure_filename
 
+from flask_login import login_required, current_user
+from sqlalchemy import func
+
+from models.patient import Patient
+from models.appointment import Appointment
+from models.prescription import Prescription
+from models.medical_report import MedicalReport
+from models.billing import Bill
+
 from extensions import db
 from models.user import User
 from models.doctor import Doctor
@@ -40,6 +49,90 @@ def list_doctors():
     return render_template(
         "doctor/list.html",
         doctors=doctors
+    )
+
+
+
+# =====================================
+# Doctor Dashboard
+# =====================================
+
+@doctor.route("/dashboard")
+@login_required
+def dashboard():
+
+    if not current_user.is_doctor:
+        return render_template("errors/403.html"), 403
+
+    doctor_data = Doctor.query.filter_by(
+        user_id=current_user.id
+    ).first_or_404()
+
+    total_patients = (
+        db.session.query(func.count(func.distinct(Appointment.patient_id)))
+        .filter(Appointment.doctor_id == doctor_data.id)
+        .scalar()
+        or 0
+    )
+
+    total_appointments = Appointment.query.filter_by(
+        doctor_id=doctor_data.id
+    ).count()
+
+    pending_appointments = Appointment.query.filter_by(
+        doctor_id=doctor_data.id,
+        status="Pending"
+    ).count()
+
+    completed_appointments = Appointment.query.filter_by(
+        doctor_id=doctor_data.id,
+        status="Completed"
+    ).count()
+
+    total_prescriptions = Prescription.query.filter_by(
+        doctor_id=doctor_data.id
+    ).count()
+
+    total_reports = MedicalReport.query.filter_by(
+        doctor_id=doctor_data.id
+    ).count()
+
+    today_appointments = (
+        Appointment.query
+        .filter_by(doctor_id=doctor_data.id)
+        .order_by(Appointment.appointment_date.asc())
+        .limit(10)
+        .all()
+    )
+
+    recent_prescriptions = (
+        Prescription.query
+        .filter_by(doctor_id=doctor_data.id)
+        .order_by(Prescription.id.desc())
+        .limit(10)
+        .all()
+    )
+
+    recent_reports = (
+        MedicalReport.query
+        .filter_by(doctor_id=doctor_data.id)
+        .order_by(MedicalReport.id.desc())
+        .limit(10)
+        .all()
+    )
+
+    return render_template(
+        "doctor/dashboard.html",
+        doctor=doctor_data,
+        total_patients=total_patients,
+        total_appointments=total_appointments,
+        pending_appointments=pending_appointments,
+        completed_appointments=completed_appointments,
+        total_prescriptions=total_prescriptions,
+        total_reports=total_reports,
+        today_appointments=today_appointments,
+        recent_prescriptions=recent_prescriptions,
+        recent_reports=recent_reports,
     )
 
 
