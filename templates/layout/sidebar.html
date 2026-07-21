@@ -3,12 +3,36 @@
     <ul>
 
         <!-- Dashboard -->
-        <li>
+<li>
+
+    {% if current_user.is_authenticated %}
+
+        {% if current_user.is_admin %}
+            <a href="{{ url_for('admin.dashboard') }}" class="active">
+
+        {% elif current_user.is_doctor %}
+            <a href="{{ url_for('doctor.dashboard') }}" class="active">
+
+        {% elif current_user.is_patient %}
+            <a href="{{ url_for('patient.dashboard') }}" class="active">
+
+        {% else %}
             <a href="{{ url_for('home') }}" class="active">
-                <i class="fas fa-chart-line"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+        {% endif %}
+
+    {% else %}
+
+        <a href="{{ url_for('home') }}" class="active">
+
+    {% endif %}
+
+        <i class="fas fa-chart-line"></i>
+        <span>Dashboard</span>
+
+    </a>
+
+
+</li>
 
         <!-- Patients -->
         <li>
