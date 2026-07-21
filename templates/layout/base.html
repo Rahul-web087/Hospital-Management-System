@@ -55,7 +55,22 @@
 
     <div class="wrapper">
 
+        {% if current_user.is_authenticated %}
+
+    {% if current_user.is_admin %}
+        {% include 'layout/admin_sidebar.html' %}
+
+    {% elif current_user.is_doctor %}
+        {% include 'layout/doctor_sidebar.html' %}
+
+    {% elif current_user.is_patient %}
+        {% include 'layout/patient_sidebar.html' %}
+
+    {% else %}
         {% include 'layout/sidebar.html' %}
+    {% endif %}
+
+{% endif %}
 
         <main class="main-content">
 

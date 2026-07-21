@@ -1,0 +1,63 @@
+<aside class="sidebar" id="sidebar">
+
+    <ul>
+
+        <li>
+            <a href="{{ url_for('patient.dashboard') }}">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('patient.appointments') }}">
+                <i class="fas fa-calendar-check"></i>
+                <span>My Appointments</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('patient.book_appointment') }}">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Book Appointment</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('patient.prescriptions') }}">
+                <i class="fas fa-file-prescription"></i>
+                <span>Prescriptions</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('patient.reports') }}">
+                <i class="fas fa-notes-medical"></i>
+                <span>Medical Reports</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('patient.bills') }}">
+                <i class="fas fa-money-check-dollar"></i>
+                <span>My Bills</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('patient.chatbot') }}">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </a>
+        </li>
+
+        <li class="mt-5">
+            <a href="{{ url_for('auth.logout') }}" class="text-danger">
+                <i class="fas fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+
+    </ul>
+
+</aside>

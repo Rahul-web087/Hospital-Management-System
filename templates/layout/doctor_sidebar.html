@@ -1,0 +1,56 @@
+<aside class="sidebar" id="sidebar">
+
+    <ul>
+
+        <li>
+            <a href="{{ url_for('doctor.dashboard') }}">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('appointment.today_appointments') }}">
+                <i class="fas fa-calendar-day"></i>
+                <span>Today's Appointments</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('appointment.upcoming_appointments') }}">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Upcoming</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('prescription.list_prescriptions') }}">
+                <i class="fas fa-file-prescription"></i>
+                <span>Prescriptions</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('medical_report.list_reports') }}">
+                <i class="fas fa-notes-medical"></i>
+                <span>Medical Reports</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('doctor.list_doctors') }}">
+                <i class="fas fa-user-doctor"></i>
+                <span>Doctors</span>
+            </a>
+        </li>
+
+        <li class="mt-5">
+            <a href="{{ url_for('auth.logout') }}" class="text-danger">
+                <i class="fas fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+
+    </ul>
+
+</aside>
