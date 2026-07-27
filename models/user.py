@@ -145,6 +145,3 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f"<User {self.email} ({self.role})>"
 
-    @property
-    def is_receptionist(self):
-        return self.role == self.ROLE_RECEPTIONIST

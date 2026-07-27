@@ -1,10 +1,318 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/base.html" %}
 
-</body>
-</html>
+{% block title %}
+Pharmacy Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                <i class="fas fa-pills text-success"></i>
+                Pharmacy Dashboard
+            </h2>
+
+            <p class="text-muted">
+                Welcome {{ current_user.full_name }}
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('pharmacy.add_medicine') }}"
+               class="btn btn-success">
+
+                <i class="fas fa-plus"></i>
+                Add Medicine
+
+            </a>
+
+            <a href="{{ url_for('pharmacy.list_medicines') }}"
+               class="btn btn-primary">
+
+                <i class="fas fa-list"></i>
+                Medicine List
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-capsules fa-2x text-primary mb-3"></i>
+
+                    <h6>Total Medicines</h6>
+
+                    <h2>{{ total_medicines }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+
+                    <h6>Active Medicines</h6>
+
+                    <h2>{{ active_medicines }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-triangle-exclamation fa-2x text-warning mb-3"></i>
+
+                    <h6>Low Stock</h6>
+
+                    <h2>{{ low_stock }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-calendar-times fa-2x text-danger mb-3"></i>
+
+                    <h6>Expired</h6>
+
+                    <h2>{{ expired }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+
+    <div class="row mb-4">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    Stock Overview
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="stockChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    Medicine Status
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="statusChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Recent Medicines -->
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            Recent Medicines
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                <tr>
+
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Manufacturer</th>
+                    <th>Quantity</th>
+                    <th>Expiry</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td>{{ medicine.medicine_code }}</td>
+
+                    <td>{{ medicine.name }}</td>
+
+                    <td>{{ medicine.category }}</td>
+
+                    <td>{{ medicine.manufacturer }}</td>
+
+                    <td>{{ medicine.quantity }}</td>
+
+                    <td>{{ medicine.expiry_date }}</td>
+
+                    <td>
+
+                        {% if medicine.status == "Active" %}
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Inactive
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7"
+                        class="text-center">
+
+                        No Medicines Available
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+new Chart(document.getElementById('stockChart'), {
+
+    type: 'bar',
+
+    data: {
+
+        labels: ['Total','Low Stock'],
+
+        datasets: [{
+
+            label: 'Medicines',
+
+            data: [{{ total_medicines }}, {{ low_stock }}]
+
+        }]
+
+    }
+
+});
+
+new Chart(document.getElementById('statusChart'), {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: ['Active','Expired'],
+
+        datasets: [{
+
+            data: [{{ active_medicines }}, {{ expired }}]
+
+        }]
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

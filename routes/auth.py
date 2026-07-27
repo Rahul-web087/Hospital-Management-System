@@ -61,17 +61,19 @@ def login():
         elif user.role == User.ROLE_PATIENT:
             return redirect(url_for("patient.dashboard"))
 
-        elif user.role == User.ROLE_RECEPTIONIST:
-            return redirect(url_for("appointment.dashboard"))
+
+
 
         elif user.role == User.ROLE_PHARMACIST:
-            return redirect(url_for("billing.list_bills"))
+
+            return redirect(url_for("pharmacy.dashboard"))
 
         elif user.role == User.ROLE_ACCOUNTANT:
             return redirect(url_for("billing.list_bills"))
 
         elif user.role == User.ROLE_LAB:
             return redirect(url_for("medical_report.list_reports"))
+
         elif user.role == User.ROLE_RECEPTIONIST:
             return redirect(url_for("receptionist.dashboard"))
 

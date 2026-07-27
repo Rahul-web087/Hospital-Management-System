@@ -1,10 +1,218 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/base.html" %}
 
-</body>
-</html>
+{% block title %}
+Medicine Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                <i class="fas fa-pills text-success"></i>
+                Medicine Management
+            </h2>
+
+            <p class="text-muted">
+                Manage all medicines in the pharmacy.
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('pharmacy.add_medicine') }}"
+               class="btn btn-success">
+
+                <i class="fas fa-plus"></i>
+                Add Medicine
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+
+                    <div class="col-md-8">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search medicine..."
+                            value="{{ request.args.get('search','') }}"
+                        >
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button class="btn btn-primary w-100">
+
+                            <i class="fas fa-search"></i>
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Medicine Table -->
+
+    <div class="card shadow">
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-success">
+
+                <tr>
+
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Manufacturer</th>
+                    <th>Purchase</th>
+                    <th>Selling</th>
+                    <th>Qty</th>
+                    <th>Expiry</th>
+                    <th>Status</th>
+                    <th width="180">Actions</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td>{{ medicine.medicine_code }}</td>
+
+                    <td>{{ medicine.name }}</td>
+
+                    <td>{{ medicine.category }}</td>
+
+                    <td>{{ medicine.manufacturer }}</td>
+
+                    <td>₹ {{ medicine.purchase_price }}</td>
+
+                    <td>₹ {{ medicine.selling_price }}</td>
+
+                    <td>
+
+                        {% if medicine.quantity <= medicine.minimum_stock %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                {{ medicine.quantity }}
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-success">
+
+                                {{ medicine.quantity }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>{{ medicine.expiry_date }}</td>
+
+                    <td>
+
+                        {% if medicine.status=="Active" %}
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Inactive
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{{ url_for('pharmacy.edit_medicine', id=medicine.id) }}"
+                           class="btn btn-sm btn-primary">
+
+                            <i class="fas fa-edit"></i>
+
+                        </a>
+
+                        <a href="{{ url_for('pharmacy.delete_medicine', id=medicine.id) }}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete this medicine?')">
+
+                            <i class="fas fa-trash"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="10" class="text-center">
+
+                        No medicines found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
