@@ -72,6 +72,8 @@ def login():
 
         elif user.role == User.ROLE_LAB:
             return redirect(url_for("medical_report.list_reports"))
+        elif user.role == User.ROLE_RECEPTIONIST:
+            return redirect(url_for("receptionist.dashboard"))
 
         return redirect(url_for("home"))
 

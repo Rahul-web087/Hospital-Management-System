@@ -42,6 +42,7 @@ def create_app():
     from routes.prescription import prescription
     from routes.billing import billing
     from routes.medical_report import medical_report
+    from routes.receptionist import receptionist
 
 
 
@@ -60,6 +61,7 @@ def create_app():
     app.register_blueprint(prescription)
     app.register_blueprint(billing)
     app.register_blueprint(medical_report)
+    app.register_blueprint(receptionist)
 
 
 
