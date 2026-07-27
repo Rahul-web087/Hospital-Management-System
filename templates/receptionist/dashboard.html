@@ -1,0 +1,312 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Receptionist Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                <i class="fas fa-user-nurse text-primary"></i>
+                Receptionist Dashboard
+            </h2>
+
+            <p class="text-muted">
+                Welcome {{ current_user.full_name }}
+            </p>
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('patient.add_patient') }}"
+               class="btn btn-primary">
+
+                <i class="fas fa-user-plus"></i>
+                Register Patient
+
+            </a>
+
+            <a href="{{ url_for('appointment.add_appointment') }}"
+               class="btn btn-success">
+
+                <i class="fas fa-calendar-plus"></i>
+                Book Appointment
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h6>Total Patients</h6>
+
+                    <h2>{{ total_patients }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h6>Today's Patients</h6>
+
+                    <h2>{{ today_patients }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h6>Today's Appointments</h6>
+
+                    <h2>{{ today_appointments }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h6>Pending Bills</h6>
+
+                    <h2>{{ pending_bills }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Queue + Appointments -->
+
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    Today's Appointments
+
+                </div>
+
+                <div class="card-body table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>Token</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {% for appointment in appointments %}
+
+                        <tr>
+
+                            <td>{{ appointment.token_number }}</td>
+
+                            <td>
+
+                                {{ appointment.patient.user.full_name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ appointment.doctor.user.full_name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ appointment.appointment_date }}
+
+                            </td>
+
+                            <td>
+
+                                {% if appointment.status=="Completed" %}
+
+                                    <span class="badge bg-success">
+
+                                        Completed
+
+                                    </span>
+
+                                {% elif appointment.status=="Pending" %}
+
+                                    <span class="badge bg-warning">
+
+                                        Pending
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        Cancelled
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center">
+
+                                No Appointments
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-success text-white">
+
+                    Queue Status
+
+                </div>
+
+                <div class="card-body">
+
+                    <h4 class="text-warning">
+
+                        Waiting :
+                        {{ waiting }}
+
+                    </h4>
+
+                    <hr>
+
+                    <h4 class="text-success">
+
+                        Completed :
+                        {{ completed }}
+
+                    </h4>
+
+                </div>
+
+            </div>
+
+            <div class="card shadow mt-4">
+
+                <div class="card-header bg-info text-white">
+
+                    Quick Actions
+
+                </div>
+
+                <div class="list-group list-group-flush">
+
+                    <a href="{{ url_for('patient.add_patient') }}"
+                       class="list-group-item">
+
+                        Register Patient
+
+                    </a>
+
+                    <a href="{{ url_for('appointment.add_appointment') }}"
+                       class="list-group-item">
+
+                        Book Appointment
+
+                    </a>
+
+                    <a href="{{ url_for('billing.list_bills') }}"
+                       class="list-group-item">
+
+                        Billing
+
+                    </a>
+
+                    <a href="{{ url_for('patient.list_patients') }}"
+                       class="list-group-item">
+
+                        Search Patient
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
