@@ -73,9 +73,30 @@ def create_app():
 
 
     # Home Page
+    from flask import redirect, url_for
+    from flask_login import current_user
+
     @app.route("/")
     def home():
-        return render_template("home/index.html")
+
+        if current_user.is_authenticated:
+
+            if current_user.role == User.ROLE_ADMIN:
+                return redirect(url_for("admin.dashboard"))
+
+            elif current_user.role == User.ROLE_DOCTOR:
+                return redirect(url_for("doctor.dashboard"))
+
+            elif current_user.role == User.ROLE_PATIENT:
+                return redirect(url_for("patient.dashboard"))
+
+            elif current_user.role == User.ROLE_RECEPTIONIST:
+                return redirect(url_for("receptionist.dashboard"))
+
+            elif current_user.role == User.ROLE_PHARMACIST:
+                return redirect(url_for("pharmacy.dashboard"))
+
+        return redirect(url_for("auth.login"))
 
     # Error Pages
     @app.errorhandler(404)
