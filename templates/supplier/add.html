@@ -1,0 +1,189 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Add Supplier
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                <i class="fas fa-truck text-primary"></i>
+                Add Supplier
+            </h2>
+
+            <p class="text-muted">
+                Register a new medicine supplier.
+            </p>
+
+        </div>
+
+        <a href="{{ url_for('supplier.list_suppliers') }}"
+           class="btn btn-secondary">
+
+            <i class="fas fa-arrow-left"></i>
+            Back
+
+        </a>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Supplier Code
+                        </label>
+
+                        <input
+                            type="text"
+                            name="supplier_code"
+                            class="form-control"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-8 mb-3">
+
+                        <label class="form-label">
+                            Company Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="company_name"
+                            class="form-control"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Contact Person
+                        </label>
+
+                        <input
+                            type="text"
+                            name="contact_person"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            GST Number
+                        </label>
+
+                        <input
+                            type="text"
+                            name="gst_number"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label">
+                            Address
+                        </label>
+
+                        <textarea
+                            name="address"
+                            rows="4"
+                            class="form-control"></textarea>
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label">
+                            Status
+                        </label>
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <button
+                    class="btn btn-success">
+
+                    <i class="fas fa-save"></i>
+
+                    Save Supplier
+
+                </button>
+
+                <a href="{{ url_for('supplier.list_suppliers') }}"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

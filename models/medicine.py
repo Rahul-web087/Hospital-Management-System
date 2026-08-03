@@ -15,6 +15,18 @@ class Medicine(db.Model):
 
     manufacturer = db.Column(db.String(150))
 
+    # Supplier
+    supplier_id = db.Column(
+        db.Integer,
+        db.ForeignKey("suppliers.id"),
+        nullable=True
+    )
+
+    supplier = db.relationship(
+        "Supplier",
+        backref="medicines"
+    )
+
     batch_no = db.Column(db.String(50))
 
     purchase_price = db.Column(db.Float, default=0)
@@ -29,7 +41,10 @@ class Medicine(db.Model):
 
     status = db.Column(db.String(20), default="Active")
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
     updated_at = db.Column(
         db.DateTime,

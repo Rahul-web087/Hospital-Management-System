@@ -25,6 +25,7 @@ def create_app():
     from models.doctor import Doctor
     from models.patient import Patient
     from models.medical_report import MedicalReport
+    from models.supplier import Supplier
 
 
 
@@ -44,6 +45,7 @@ def create_app():
     from routes.medical_report import medical_report
     from routes.receptionist import receptionist
     from routes.pharmacy import pharmacy
+    from routes.supplier import supplier
 
 
 
@@ -64,6 +66,7 @@ def create_app():
     app.register_blueprint(medical_report)
     app.register_blueprint(receptionist)
     app.register_blueprint(pharmacy)
+    app.register_blueprint(supplier)
 
 
 
