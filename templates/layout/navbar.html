@@ -2,20 +2,20 @@
 
     <div class="container-fluid">
 
-        <button class="btn d-lg-none me-3" id="sidebarToggle">
+        <!-- Sidebar Toggle -->
+        <button type="button" class="btn d-lg-none me-3" id="sidebarToggle">
             <i class="fas fa-bars"></i>
         </button>
 
-        <a class="navbar-brand d-flex align-items-center" href="/">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center"
+           href="{{ url_for('admin.dashboard') }}">
 
             <div class="logo-box">
-
                 <i class="fas fa-hospital"></i>
-
             </div>
 
             <div class="ms-2">
-
                 <h5 class="mb-0 fw-bold">
                     Hospital Management
                 </h5>
@@ -23,19 +23,17 @@
                 <small class="text-muted">
                     Healthcare System
                 </small>
-
             </div>
 
         </a>
 
+        <!-- Search -->
         <form class="d-none d-md-flex search-box mx-auto">
 
             <div class="input-group">
 
                 <span class="input-group-text">
-
                     <i class="fas fa-search"></i>
-
                 </span>
 
                 <input
@@ -47,35 +45,46 @@
 
         </form>
 
+        <!-- Right Menu -->
         <div class="d-flex align-items-center">
 
-            <button class="btn nav-icon position-relative me-3">
+            <!-- Notifications -->
+            <button type="button"
+                    class="btn nav-icon position-relative me-3">
 
                 <i class="fas fa-bell"></i>
 
-                <span class="notification-badge">3</span>
+                <span class="notification-badge">
+                    3
+                </span>
 
             </button>
 
-            <button class="btn nav-icon me-3">
+            <!-- Messages -->
+            <button type="button"
+                    class="btn nav-icon me-3">
 
                 <i class="fas fa-envelope"></i>
 
             </button>
 
+            <!-- Profile -->
             <div class="dropdown">
 
                 <button
                     class="btn profile-btn dropdown-toggle"
-                    data-bs-toggle="dropdown">
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
 
-                    <img src="{{ url_for('static', filename='images/logo/logo.png') }}"
-                         class="profile-image"
-                         alt="Profile">
+                    <img
+                        src="{{ url_for('static', filename='images/logo/logo.png') }}"
+                        class="profile-image"
+                        alt="Profile">
 
                     <span class="ms-2">
 
-                        Admin
+                        {{ current_user.full_name if current_user.is_authenticated else "Guest" }}
 
                     </span>
 
@@ -85,7 +94,8 @@
 
                     <li>
 
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item"
+                           href="#">
 
                             <i class="fas fa-user me-2"></i>
 
@@ -97,7 +107,8 @@
 
                     <li>
 
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item"
+                           href="#">
 
                             <i class="fas fa-cog me-2"></i>
 
@@ -108,16 +119,15 @@
                     </li>
 
                     <li>
-
                         <hr class="dropdown-divider">
-
                     </li>
 
                     <li>
 
-                        <a class="dropdown-item text-danger" href="#">
+                        <a class="dropdown-item text-danger"
+                           href="{{ url_for('auth.logout') }}">
 
-                            <i class="fas fa-sign-out-alt me-2"></i>
+                            <i class="fas fa-right-from-bracket me-2"></i>
 
                             Logout
 
