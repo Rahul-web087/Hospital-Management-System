@@ -1,21 +1,51 @@
 from datetime import datetime
+
 from extensions import db
 
 
 class Medicine(db.Model):
+
     __tablename__ = "medicines"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-    medicine_code = db.Column(db.String(20), unique=True, nullable=False)
+    medicine_code = db.Column(
+        db.String(20),
+        unique=True,
+        nullable=False
+    )
 
-    name = db.Column(db.String(150), nullable=False)
+    name = db.Column(
+        db.String(150),
+        nullable=False
+    )
 
-    category = db.Column(db.String(100))
+    generic_name = db.Column(
+        db.String(150)
+    )
 
-    manufacturer = db.Column(db.String(150))
+    # ==========================
+    # Category
+    # ==========================
 
+    category_id = db.Column(
+        db.Integer,
+        db.ForeignKey("medicine_categories.id"),
+        nullable=False
+    )
+
+    category = db.relationship(
+        "MedicineCategory",
+        back_populates="medicines"
+    )
+
+    # ==========================
     # Supplier
+    # ==========================
+
     supplier_id = db.Column(
         db.Integer,
         db.ForeignKey("suppliers.id"),
@@ -27,19 +57,50 @@ class Medicine(db.Model):
         backref="medicines"
     )
 
-    batch_no = db.Column(db.String(50))
+    # ==========================
+    # Medicine Details
+    # ==========================
 
-    purchase_price = db.Column(db.Float, default=0)
+    manufacturer = db.Column(
+        db.String(150)
+    )
 
-    selling_price = db.Column(db.Float, default=0)
+    batch_no = db.Column(
+        db.String(50)
+    )
 
-    quantity = db.Column(db.Integer, default=0)
+    purchase_price = db.Column(
+        db.Float,
+        default=0
+    )
 
-    minimum_stock = db.Column(db.Integer, default=10)
+    selling_price = db.Column(
+        db.Float,
+        default=0
+    )
 
-    expiry_date = db.Column(db.Date)
+    quantity = db.Column(
+        db.Integer,
+        default=0
+    )
 
-    status = db.Column(db.String(20), default="Active")
+    minimum_stock = db.Column(
+        db.Integer,
+        default=10
+    )
+
+    expiry_date = db.Column(
+        db.Date
+    )
+
+    description = db.Column(
+        db.Text
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="Active"
+    )
 
     created_at = db.Column(
         db.DateTime,

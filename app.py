@@ -26,6 +26,11 @@ def create_app():
     from models.patient import Patient
     from models.medical_report import MedicalReport
     from models.supplier import Supplier
+    from models.medicine_category import MedicineCategory
+    from models.medicine import Medicine
+
+
+    
 
 
 
