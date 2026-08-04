@@ -14,6 +14,9 @@ from models.prescription import Prescription
 from models.medical_report import MedicalReport
 from models.billing import Bill
 
+
+
+
 admin = Blueprint("admin", __name__, url_prefix="/admin")
 
 
