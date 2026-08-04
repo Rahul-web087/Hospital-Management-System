@@ -503,3 +503,30 @@ footer{
 .quick-action:hover{
     transform:scale(1.05);
 }
+
+
+/* Desktop Sidebar Toggle */
+
+.sidebar{
+
+    transition: all .3s ease;
+
+}
+
+.sidebar.hide{
+
+    margin-left:-260px;
+
+}
+
+.main-content{
+
+    transition:.3s;
+
+}
+
+.main-content.expand{
+
+    margin-left:0;
+
+}

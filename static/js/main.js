@@ -1,26 +1,28 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const togglePassword = document.getElementById("togglePassword");
+    document.addEventListener("DOMContentLoaded", function () {
 
-    if (togglePassword) {
+    const sidebar = document.getElementById("sidebar");
 
-        togglePassword.addEventListener("click", function () {
+    const toggle = document.getElementById("sidebarToggle");
 
-            const password = document.getElementById("password");
+    const content = document.querySelector(".main-content");
 
-            const icon = this.querySelector("i");
+    if (toggle && sidebar) {
 
-            if (password.type === "password") {
+        toggle.addEventListener("click", function () {
 
-                password.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
+            if (window.innerWidth <= 992) {
+
+                sidebar.classList.toggle("active");
 
             } else {
 
-                password.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
+                sidebar.classList.toggle("hide");
+
+                if(content){
+                    content.classList.toggle("expand");
+                }
 
             }
 
@@ -30,32 +32,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const sidebar = document.getElementById("sidebar");
-    const toggle = document.getElementById("sidebarToggle");
-
-    if (toggle) {
-
-        toggle.addEventListener("click", function () {
-
-            sidebar.classList.toggle("active");
-
-        });
-
-    }
-
+    // Password Toggle
     const togglePassword = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
 
-    if (togglePassword) {
+    if (togglePassword && password) {
 
-        togglePassword.addEventListener("click", function () {
+        togglePassword.addEventListener("click", () => {
 
-            const password = document.getElementById("password");
-            const icon = this.querySelector("i");
+            const icon = togglePassword.querySelector("i");
 
             if (password.type === "password") {
 
