@@ -1,0 +1,312 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+Purchase List
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fas fa-cart-shopping text-primary"></i>
+
+                Purchase Management
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Manage medicine purchases and suppliers
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('purchase.today_purchases') }}"
+               class="btn btn-success me-2">
+
+                <i class="fas fa-calendar-day"></i>
+
+                Today's Purchases
+
+            </a>
+
+            <a href="{{ url_for('purchase.add_purchase') }}"
+               class="btn btn-primary">
+
+                <i class="fas fa-plus"></i>
+
+                New Purchase
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <input
+                        type="text"
+                        id="searchPurchase"
+                        class="form-control"
+                        placeholder="Search Purchase Number, Supplier or Invoice">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Purchase Table -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                Purchase List
+
+            </h5>
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table
+                class="table table-hover align-middle"
+                id="purchaseTable">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Purchase No</th>
+
+                        <th>Supplier</th>
+
+                        <th>Invoice</th>
+
+                        <th>Date</th>
+
+                        <th>Total</th>
+
+                        <th>Payment</th>
+
+                        <th width="220">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for purchase in purchases %}
+
+                                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>
+
+                            <strong>
+
+                                {{ purchase.purchase_no }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ purchase.supplier.name }}
+
+                        </td>
+
+                        <td>
+
+                            {{ purchase.invoice_no or "-" }}
+
+                        </td>
+
+                        <td>
+
+                            {{ purchase.purchase_date.strftime("%d-%m-%Y") }}
+
+                        </td>
+
+                        <td>
+
+                            ₹ {{ "%.2f"|format(purchase.grand_total) }}
+
+                        </td>
+
+                        <td>
+
+                            {% if purchase.payment_status == "Paid" %}
+
+                                <span class="badge bg-success">
+
+                                    Paid
+
+                                </span>
+
+                            {% elif purchase.payment_status == "Partial" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Partial
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Pending
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a href="{{ url_for('purchase.view_purchase', id=purchase.id) }}"
+                               class="btn btn-info btn-sm">
+
+                                <i class="fas fa-eye"></i>
+
+                            </a>
+
+                            <a href="{{ url_for('purchase.edit_purchase', id=purchase.id) }}"
+                               class="btn btn-warning btn-sm">
+
+                                <i class="fas fa-edit"></i>
+
+                            </a>
+
+                            <a href="{{ url_for('purchase.print_purchase', id=purchase.id) }}"
+                               target="_blank"
+                               class="btn btn-secondary btn-sm">
+
+                                <i class="fas fa-print"></i>
+
+                            </a>
+
+                            <a href="{{ url_for('purchase.delete_purchase', id=purchase.id) }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this purchase?');">
+
+                                <i class="fas fa-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="8" class="text-center py-5">
+
+                            <i class="fas fa-cart-shopping fa-3x text-muted mb-3"></i>
+
+                            <h5 class="text-muted">
+
+                                No Purchase Records Found
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                Click <strong>New Purchase</strong> to add your first purchase.
+
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+                    </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const search = document.getElementById("searchPurchase");
+
+    const table = document.getElementById("purchaseTable");
+
+    if (search && table) {
+
+        search.addEventListener("keyup", function () {
+
+            const filter = this.value.toLowerCase();
+
+            const rows = table.querySelectorAll("tbody tr");
+
+            rows.forEach(function (row) {
+
+                const text = row.innerText.toLowerCase();
+
+                if (text.indexOf(filter) > -1) {
+
+                    row.style.display = "";
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+        });
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

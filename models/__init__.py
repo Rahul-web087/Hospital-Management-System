@@ -28,3 +28,6 @@ from .purchase import Purchase
 
 def medicine_category():
     return None
+
+from .purchase import Purchase
+from .purchase_item import PurchaseItem

@@ -32,21 +32,13 @@
     </a>
 
 
-    </li>
+</li>
 
         <!-- Patients -->
         <li>
             <a href="{{ url_for('patient.list_patients') }}">
                 <i class="fas fa-user-injured"></i>
                 <span>Patients</span>
-            </a>
-        </li>
-
-        <!-- Doctors -->
-        <li>
-            <a href="{{ url_for('doctor.list_doctors') }}">
-                <i class="fas fa-user-doctor"></i>
-                <span>Doctors</span>
             </a>
         </li>
 
@@ -58,6 +50,16 @@
             </a>
         </li>
 
+        <!-- Doctors -->
+        <li>
+            <a href="{{ url_for('doctor.list_doctors') }}">
+                <i class="fas fa-user-doctor"></i>
+                <span>Doctors</span>
+            </a>
+        </li>
+
+
+
         <!-- Appointments -->
         <li>
             <a href="{{ url_for('appointment.list_appointments') }}">
@@ -65,6 +67,15 @@
                 <span>Appointments</span>
             </a>
         </li>
+
+
+        <!-- Medical Reports (Coming Soon) -->
+       <li>
+    <a href="{{ url_for('medical_report.list_reports') }}">
+        <i class="fas fa-notes-medical"></i>
+        <span>Medical Reports</span>
+    </a>
+       </li>
 
         <!-- Prescriptions -->
         <li>
@@ -74,13 +85,7 @@
             </a>
         </li>
 
-        <!-- Medical Reports (Coming Soon) -->
-       <li>
-    <a href="{{ url_for('medical_report.list_reports') }}">
-        <i class="fas fa-notes-medical"></i>
-        <span>Medical Reports</span>
-    </a>
-</li>
+
 
         <!-- Billing -->
         <li>
