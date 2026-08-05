@@ -32,7 +32,7 @@
     </a>
 
 
-</li>
+ </li>
 
         <!-- Patients -->
         <li>
@@ -95,11 +95,79 @@
             </a>
         </li>
 
-        <!-- Pharmacy  -->
-        <li>
-            <a href="{{ url_for('pharmacy.dashboard') }}">
-         </li>
+        <!-- Pharmacy -->
 
+<li>
+
+    <a href="{{ url_for('pharmacy.dashboard') }}">
+
+        <i class="fas fa-pills"></i>
+
+        <span>Pharmacy Dashboard</span>
+
+    </a>
+
+</li>
+
+<li>
+
+    <a href="{{ url_for('pharmacy.list_medicines') }}">
+
+        <i class="fas fa-capsules"></i>
+
+        <span>Medicines</span>
+
+    </a>
+
+</li>
+
+<li>
+
+    <a href="{{ url_for('supplier.list_suppliers') }}">
+
+        <i class="fas fa-truck"></i>
+
+        <span>Suppliers</span>
+
+    </a>
+
+</li>
+
+<li>
+
+    <a href="{{ url_for('purchase.list_purchases') }}">
+
+        <i class="fas fa-cart-plus"></i>
+
+        <span>Purchases</span>
+
+    </a>
+
+</li>
+
+<li>
+
+    <a href="{{ url_for('pharmacy.low_stock') }}">
+
+        <i class="fas fa-box-open"></i>
+
+        <span>Low Stock</span>
+
+    </a>
+
+</li>
+
+<li>
+
+    <a href="{{ url_for('pharmacy.expired') }}">
+
+        <i class="fas fa-calendar-times"></i>
+
+        <span>Expired Medicines</span>
+
+    </a>
+
+</li>
         <!-- AI Assistant  -->
         <li>
             <a href="#">

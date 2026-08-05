@@ -1,12 +1,27 @@
 from datetime import date
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_required, current_user
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash
+)
+
+from flask_login import (
+    login_required,
+    current_user
+)
 
 from sqlalchemy import or_
 
 from extensions import db
+
 from models.medicine import Medicine
+from models.medicine_category import MedicineCategory
+from models.supplier import Supplier
+
 
 pharmacy = Blueprint(
     "pharmacy",
@@ -15,14 +30,15 @@ pharmacy = Blueprint(
 )
 
 
-# =====================================
-# Dashboard
-# =====================================
+# ==========================================
+# Pharmacy Dashboard
+# ==========================================
+
 @pharmacy.route("/dashboard")
 @login_required
 def dashboard():
 
-    if not (current_user.is_admin or current_user.is_pharmacist):
+    if not current_user.is_admin:
         flash("Access denied.", "danger")
         return redirect(url_for("auth.login"))
 
@@ -30,6 +46,10 @@ def dashboard():
 
     active_medicines = Medicine.query.filter_by(
         status="Active"
+    ).count()
+
+    inactive_medicines = Medicine.query.filter_by(
+        status="Inactive"
     ).count()
 
     low_stock = Medicine.query.filter(
@@ -40,187 +60,518 @@ def dashboard():
         Medicine.expiry_date < date.today()
     ).count()
 
-    medicines = Medicine.query.order_by(
-        Medicine.created_at.desc()
-    ).limit(10).all()
+    categories = MedicineCategory.query.count()
+
+    suppliers = Supplier.query.count()
+
+    medicines = (
+        Medicine.query
+        .order_by(Medicine.created_at.desc())
+        .limit(10)
+        .all()
+    )
 
     return render_template(
+
         "pharmacy/dashboard.html",
+
         total_medicines=total_medicines,
+
         active_medicines=active_medicines,
+
+        inactive_medicines=inactive_medicines,
+
         low_stock=low_stock,
+
         expired=expired,
+
+        total_categories=categories,
+
+        total_suppliers=suppliers,
+
         medicines=medicines
+
     )
 
 
-
-# =====================================
+# ==========================================
 # Medicine List
-# =====================================
+# ==========================================
+
 @pharmacy.route("/medicines")
 @login_required
 def list_medicines():
 
-    search = request.args.get("search", "").strip()
+    search = request.args.get(
+        "search",
+        ""
+    ).strip()
 
-    query = Medicine.query
+    medicines = Medicine.query
 
     if search:
-        query = query.filter(
+
+        medicines = medicines.filter(
+
             or_(
+
                 Medicine.name.ilike(f"%{search}%"),
+
                 Medicine.medicine_code.ilike(f"%{search}%"),
-                Medicine.category.ilike(f"%{search}%"),
+
                 Medicine.manufacturer.ilike(f"%{search}%")
+
             )
+
         )
 
-    medicines = query.order_by(
+    medicines = medicines.order_by(
         Medicine.name.asc()
     ).all()
 
     return render_template(
+
         "pharmacy/medicines.html",
-        medicines=medicines
+
+        medicines=medicines,
+
+        search=search
+
     )
 
-
-# =====================================
+# ==========================================
 # Add Medicine
-# =====================================
-@pharmacy.route("/add", methods=["GET", "POST"])
+# ==========================================
+
+@pharmacy.route("/medicines/add", methods=["GET", "POST"])
 @login_required
 def add_medicine():
 
+    if not current_user.is_admin:
+
+        flash("Access denied.", "danger")
+
+        return redirect(url_for("auth.login"))
+
+    categories = (
+        MedicineCategory.query
+        .order_by(MedicineCategory.name.asc())
+        .all()
+    )
+
+    suppliers = (
+        Supplier.query
+        .order_by(Supplier.name.asc())
+        .all()
+    )
+
     if request.method == "POST":
 
-        # Check duplicate medicine code
+        medicine_code = request.form.get(
+            "medicine_code"
+        ).strip()
+
         existing = Medicine.query.filter_by(
-            medicine_code=request.form["medicine_code"]
+            medicine_code=medicine_code
         ).first()
 
         if existing:
-            flash("Medicine Code already exists.", "danger")
-            return redirect(url_for("pharmacy.add_medicine"))
+
+            flash(
+                "Medicine code already exists.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("pharmacy.add_medicine")
+            )
+
+        expiry_date = None
+
+        expiry = request.form.get(
+            "expiry_date"
+        )
+
+        if expiry:
+
+            expiry_date = date.fromisoformat(
+                expiry
+            )
 
         medicine = Medicine(
 
-            medicine_code=request.form["medicine_code"],
+            medicine_code=medicine_code,
 
-            name=request.form["name"],
+            name=request.form.get("name"),
 
-            category=request.form["category"],
+            category_id=request.form.get(
+                "category_id"
+            ),
 
-            manufacturer=request.form["manufacturer"],
+            supplier_id=request.form.get(
+                "supplier_id"
+            ),
 
-            batch_no=request.form["batch_no"],
+            manufacturer=request.form.get(
+                "manufacturer"
+            ),
 
-            purchase_price=float(request.form["purchase_price"]),
+            batch_no=request.form.get(
+                "batch_no"
+            ),
 
-            selling_price=float(request.form["selling_price"]),
+            purchase_price=float(
+                request.form.get(
+                    "purchase_price"
+                ) or 0
+            ),
 
-            quantity=int(request.form["quantity"]),
+            selling_price=float(
+                request.form.get(
+                    "selling_price"
+                ) or 0
+            ),
 
-            minimum_stock=int(request.form["minimum_stock"]),
+            quantity=int(
+                request.form.get(
+                    "quantity"
+                ) or 0
+            ),
 
-            expiry_date=request.form["expiry_date"],
+            minimum_stock=int(
+                request.form.get(
+                    "minimum_stock"
+                ) or 10
+            ),
 
-            status=request.form["status"]
+            expiry_date=expiry_date,
+
+            status=request.form.get(
+                "status"
+            )
+
         )
 
         db.session.add(medicine)
+
         db.session.commit()
 
-        flash("Medicine added successfully.", "success")
+        flash(
+            "Medicine added successfully.",
+            "success"
+        )
 
-        return redirect(url_for("pharmacy.list_medicines"))
+        return redirect(
+            url_for(
+                "pharmacy.list_medicines"
+            )
+        )
 
-    return render_template("pharmacy/add_medicine.html")
+    return render_template(
 
+        "pharmacy/add_medicine.html",
 
-# =====================================
+        categories=categories,
+
+        suppliers=suppliers
+
+    )
+
+# ==========================================
 # Edit Medicine
-# =====================================
-@pharmacy.route("/edit/<int:id>", methods=["GET", "POST"])
+# ==========================================
+
+@pharmacy.route("/medicines/edit/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit_medicine(id):
 
+    if not current_user.is_admin:
+
+        flash("Access denied.", "danger")
+
+        return redirect(url_for("auth.login"))
+
     medicine = Medicine.query.get_or_404(id)
+
+    categories = (
+        MedicineCategory.query
+        .order_by(MedicineCategory.name.asc())
+        .all()
+    )
+
+    suppliers = (
+        Supplier.query
+        .order_by(Supplier.name.asc())
+        .all()
+    )
 
     if request.method == "POST":
 
-        medicine.name = request.form["name"]
-        medicine.category = request.form["category"]
-        medicine.manufacturer = request.form["manufacturer"]
-        medicine.batch_no = request.form["batch_no"]
+        medicine_code = request.form.get(
+            "medicine_code"
+        ).strip()
 
-        medicine.purchase_price = float(request.form["purchase_price"])
-        medicine.selling_price = float(request.form["selling_price"])
+        existing = Medicine.query.filter(
+            Medicine.medicine_code == medicine_code,
+            Medicine.id != id
+        ).first()
 
-        medicine.quantity = int(request.form["quantity"])
-        medicine.minimum_stock = int(request.form["minimum_stock"])
+        if existing:
 
-        medicine.expiry_date = request.form["expiry_date"]
-        medicine.status = request.form["status"]
+            flash(
+                "Medicine code already exists.",
+                "danger"
+            )
+
+            return redirect(
+                url_for(
+                    "pharmacy.edit_medicine",
+                    id=id
+                )
+            )
+
+        expiry_date = None
+
+        expiry = request.form.get(
+            "expiry_date"
+        )
+
+        if expiry:
+
+            expiry_date = date.fromisoformat(
+                expiry
+            )
+
+        medicine.medicine_code = medicine_code
+
+        medicine.name = request.form.get(
+            "name"
+        )
+
+        medicine.category_id = int(
+            request.form.get(
+                "category_id"
+            )
+        )
+
+        medicine.supplier_id = int(
+            request.form.get(
+                "supplier_id"
+            )
+        )
+
+        medicine.manufacturer = request.form.get(
+            "manufacturer"
+        )
+
+        medicine.batch_no = request.form.get(
+            "batch_no"
+        )
+
+        medicine.purchase_price = float(
+            request.form.get(
+                "purchase_price"
+            ) or 0
+        )
+
+        medicine.selling_price = float(
+            request.form.get(
+                "selling_price"
+            ) or 0
+        )
+
+        medicine.quantity = int(
+            request.form.get(
+                "quantity"
+            ) or 0
+        )
+
+        medicine.minimum_stock = int(
+            request.form.get(
+                "minimum_stock"
+            ) or 10
+        )
+
+        medicine.expiry_date = expiry_date
+
+        medicine.status = request.form.get(
+            "status"
+        )
 
         db.session.commit()
 
-        flash("Medicine updated successfully.", "success")
+        flash(
+            "Medicine updated successfully.",
+            "success"
+        )
 
-        return redirect(url_for("pharmacy.list_medicines"))
+        return redirect(
+            url_for(
+                "pharmacy.list_medicines"
+            )
+        )
 
     return render_template(
-        "pharmacy/edit_medicine.html",
-        medicine=medicine
-    )
 
-# =====================================
+        "pharmacy/edit_medicine.html",
+
+        medicine=medicine,
+
+        categories=categories,
+
+        suppliers=suppliers
+
+    )
+# ==========================================
 # Delete Medicine
-# =====================================
-@pharmacy.route("/delete/<int:id>")
+# ==========================================
+
+@pharmacy.route("/medicines/delete/<int:id>")
 @login_required
 def delete_medicine(id):
+
+    if not current_user.is_admin:
+
+        flash("Access denied.", "danger")
+
+        return redirect(url_for("auth.login"))
 
     medicine = Medicine.query.get_or_404(id)
 
     db.session.delete(medicine)
+
     db.session.commit()
 
-    flash("Medicine deleted successfully.", "success")
+    flash(
+        "Medicine deleted successfully.",
+        "success"
+    )
 
-    return redirect(url_for("pharmacy.list_medicines"))
+    return redirect(
+        url_for("pharmacy.list_medicines")
+    )
 
 
-# =====================================
+# ==========================================
 # Low Stock Medicines
-# =====================================
+# ==========================================
+
 @pharmacy.route("/low-stock")
 @login_required
 def low_stock():
 
-    medicines = Medicine.query.filter(
-        Medicine.quantity <= Medicine.minimum_stock
-    ).all()
+    medicines = (
+        Medicine.query
+        .filter(
+            Medicine.quantity <= Medicine.minimum_stock
+        )
+        .order_by(Medicine.quantity.asc())
+        .all()
+    )
 
     return render_template(
         "pharmacy/medicines.html",
-        medicines=medicines
+        medicines=medicines,
+        page_title="Low Stock Medicines"
     )
 
 
-# =====================================
+# ==========================================
 # Expired Medicines
-# =====================================
+# ==========================================
+
 @pharmacy.route("/expired")
 @login_required
 def expired():
 
-    medicines = Medicine.query.filter(
-        Medicine.expiry_date < date.today()
-    ).all()
+    medicines = (
+        Medicine.query
+        .filter(
+            Medicine.expiry_date.isnot(None),
+            Medicine.expiry_date < date.today()
+        )
+        .order_by(Medicine.expiry_date.asc())
+        .all()
+    )
 
     return render_template(
         "pharmacy/medicines.html",
-        medicines=medicines
+        medicines=medicines,
+        page_title="Expired Medicines"
+    )
+
+
+# ==========================================
+# Near Expiry Medicines (30 Days)
+# ==========================================
+
+@pharmacy.route("/near-expiry")
+@login_required
+def near_expiry():
+
+    from datetime import timedelta
+
+    today = date.today()
+
+    end_date = today + timedelta(days=30)
+
+    medicines = (
+        Medicine.query
+        .filter(
+            Medicine.expiry_date.isnot(None),
+            Medicine.expiry_date >= today,
+            Medicine.expiry_date <= end_date
+        )
+        .order_by(Medicine.expiry_date.asc())
+        .all()
+    )
+
+    return render_template(
+        "pharmacy/medicines.html",
+        medicines=medicines,
+        page_title="Near Expiry Medicines"
+    )
+
+
+# ==========================================
+# Active Medicines
+# ==========================================
+
+@pharmacy.route("/active")
+@login_required
+def active_medicines():
+
+    medicines = (
+        Medicine.query
+        .filter_by(status="Active")
+        .order_by(Medicine.name.asc())
+        .all()
+    )
+
+    return render_template(
+        "pharmacy/medicines.html",
+        medicines=medicines,
+        page_title="Active Medicines"
+    )
+
+
+# ==========================================
+# Inactive Medicines
+# ==========================================
+
+@pharmacy.route("/inactive")
+@login_required
+def inactive_medicines():
+
+    medicines = (
+        Medicine.query
+        .filter_by(status="Inactive")
+        .order_by(Medicine.name.asc())
+        .all()
+    )
+
+    return render_template(
+        "pharmacy/medicines.html",
+        medicines=medicines,
+        page_title="Inactive Medicines"
     )

@@ -21,15 +21,15 @@ def create_app():
 
     # Import Models
     from models.user import User
-    # from models.department import Department
-    # from models.doctor import Doctor
-    # from models.patient import Patient
-    # from models.medical_report import MedicalReport
-    # from models.supplier import Supplier
-    # from models.medicine_category import MedicineCategory
-    # from models.medicine import Medicine
-    # from models.purchase import Purchase
-    # from models.purchase_item import PurchaseItem
+    from models.department import Department
+    from models.doctor import Doctor
+    from models.patient import Patient
+    from models.medical_report import MedicalReport
+    from models.supplier import Supplier
+    from models.medicine_category import MedicineCategory
+    from models.medicine import Medicine
+    from models.purchase import Purchase
+    from models.purchase_item import PurchaseItem
 
 
     

@@ -1,10 +1,361 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/base.html" %}
 
-</body>
-</html>
+{% block title %}
+Purchase Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="fas fa-file-invoice text-primary"></i>
+
+                Purchase Details
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                View purchase information
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{{ url_for('purchase.print_purchase', id=purchase.id) }}"
+               target="_blank"
+               class="btn btn-success">
+
+                <i class="fas fa-print"></i>
+
+                Print
+
+            </a>
+
+            <a href="{{ url_for('purchase.list_purchases') }}"
+               class="btn btn-secondary">
+
+                <i class="fas fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Purchase Information -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+
+            <h5 class="mb-0">
+
+                Purchase Information
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>Purchase Number</strong>
+
+                    <p class="mb-0">
+
+                        {{ purchase.purchase_no }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>Supplier</strong>
+
+                    <p class="mb-0">
+
+                        {{ purchase.supplier.name }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>Invoice Number</strong>
+
+                    <p class="mb-0">
+
+                        {{ purchase.invoice_no or "-" }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>Purchase Date</strong>
+
+                    <p class="mb-0">
+
+                        {{ purchase.purchase_date.strftime("%d-%m-%Y") }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>Payment Status</strong>
+
+                    <p>
+
+                        {% if purchase.payment_status == "Paid" %}
+
+                            <span class="badge bg-success">
+
+                                Paid
+
+                            </span>
+
+                        {% elif purchase.payment_status == "Partial" %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Partial
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Pending
+
+                            </span>
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>Grand Total</strong>
+
+                    <p class="fw-bold text-success">
+
+                        ₹ {{ "%.2f"|format(purchase.grand_total) }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Purchase Items -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-success text-white">
+
+            <h5 class="mb-0">
+
+                Purchased Medicines
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-light">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Medicine</th>
+
+                        <th>Quantity</th>
+
+                        <th>Purchase Price</th>
+
+                        <th>Total</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in items %}
+                                            <tr>
+
+                            <td>
+
+                                {{ loop.index }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.medicine.name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.quantity }}
+
+                            </td>
+
+                            <td>
+
+                                ₹ {{ "%.2f"|format(item.purchase_price) }}
+
+                            </td>
+
+                            <td>
+
+                                ₹ {{ "%.2f"|format(item.total) }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <hr>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <h5 class="mb-3">
+
+                        Remarks
+
+                    </h5>
+
+                    <div class="border rounded p-3 bg-light">
+
+                        {{ purchase.remarks or "No remarks available." }}
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <table class="table table-bordered">
+
+                        <tr>
+
+                            <th width="50%">
+
+                                Sub Total
+
+                            </th>
+
+                            <td>
+
+                                ₹ {{ "%.2f"|format(purchase.subtotal) }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Discount
+
+                            </th>
+
+                            <td>
+
+                                ₹ {{ "%.2f"|format(purchase.discount) }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Tax
+
+                            </th>
+
+                            <td>
+
+                                ₹ {{ "%.2f"|format(purchase.tax) }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr class="table-success">
+
+                            <th>
+
+                                Grand Total
+
+                            </th>
+
+                            <td class="fw-bold">
+
+                                ₹ {{ "%.2f"|format(purchase.grand_total) }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
