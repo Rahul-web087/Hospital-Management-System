@@ -108,6 +108,25 @@ class User(UserMixin, db.Model):
             password
         )
 
+    # =====================================
+    # Password Reset
+    # =====================================
+
+    reset_token = db.Column(
+        db.String(200),
+        unique=True,
+        nullable=True
+    )
+
+    reset_token_expiry = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+
+
+
+
     # ===============================
     # Role Helpers
     # ===============================
