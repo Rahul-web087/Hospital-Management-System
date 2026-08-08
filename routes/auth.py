@@ -303,10 +303,12 @@ def forgot_password():
         db.session.commit()
 
         # Generate reset URL
-        reset_link = url_for(
+        reset_link = (
+                current_app.config["APP_URL"]
+                + url_for(
             "auth.reset_password",
-            token=token,
-            _external=True
+            token=token
+        )
         )
 
         # Email

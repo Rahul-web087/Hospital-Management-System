@@ -40,6 +40,9 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
+    # Application URL
+    APP_URL = os.getenv("APP_URL")
+
     # Session
     SESSION_PERMANENT = False
 
