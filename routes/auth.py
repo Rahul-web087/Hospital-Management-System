@@ -24,6 +24,8 @@ from extensions import db, mail
 from models.user import User
 from models.patient import Patient
 import secrets
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 
 auth = Blueprint("auth", __name__)
@@ -257,11 +259,6 @@ def register():
         "auth/register.html"
     )
 
-
-# =====================================
-# Forgot Password
-# =====================================
-
 @auth.route(
     "/forgot-password",
     methods=["GET", "POST"]
@@ -302,28 +299,51 @@ def forgot_password():
 
         db.session.commit()
 
-        # Generate reset URL
+        # Generate production reset URL
         reset_link = (
-                current_app.config["APP_URL"]
-                + url_for(
-            "auth.reset_password",
-            token=token
-        )
+            current_app.config["APP_URL"]
+            + url_for(
+                "auth.reset_password",
+                token=token
+            )
         )
 
-        # Email
-        msg = Message(
+        # Brevo API configuration
+        configuration = sib_api_v3_sdk.Configuration()
+
+        configuration.api_key["api-key"] = (
+            current_app.config["BREVO_API_KEY"]
+        )
+
+        api_instance = (
+            sib_api_v3_sdk.TransactionalEmailsApi(
+                sib_api_v3_sdk.ApiClient(configuration)
+            )
+        )
+
+        # Create email
+        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+
+            sender={
+                "name": "Hospital Management System",
+                "email": current_app.config[
+                    "MAIL_DEFAULT_SENDER"
+                ]
+            },
+
+            to=[
+                {
+                    "email": user.email,
+                    "name": user.full_name
+                }
+            ],
+
             subject=(
                 "Hospital Management System - "
                 "Password Reset"
             ),
-            sender=current_app.config[
-                "MAIL_DEFAULT_SENDER"
-            ],
-            recipients=[user.email]
-        )
 
-        msg.body = f"""
+            text_content=f"""
 Hello {user.full_name},
 
 A request was received to reset your password.
@@ -339,8 +359,30 @@ you can safely ignore this email.
 
 Hospital Management System
 """
+        )
 
-        mail.send(msg)
+        # Send through Brevo API
+        try:
+
+            api_instance.send_transac_email(
+                send_smtp_email
+            )
+
+        except ApiException as e:
+
+            current_app.logger.error(
+                f"Brevo API email error: {e}"
+            )
+
+            flash(
+                "Unable to send password reset email. "
+                "Please try again later.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("auth.forgot_password")
+            )
 
         flash(
             "Password reset link has been sent to your email.",
@@ -354,7 +396,6 @@ Hospital Management System
     return render_template(
         "auth/forgot_password.html"
     )
-
 
 # =====================================
 # Reset Password

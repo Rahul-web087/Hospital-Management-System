@@ -40,6 +40,14 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+
+    MAIL_DEFAULT_SENDER = os.getenv(
+        "MAIL_DEFAULT_SENDER"
+    )
+
+    APP_URL = os.getenv("APP_URL")
+
     # Application URL
     APP_URL = os.getenv("APP_URL")
 
