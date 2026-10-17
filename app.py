@@ -30,7 +30,7 @@ def create_app():
     from models.medicine import Medicine
     from models.purchase import Purchase
     from models.purchase_item import PurchaseItem
-    from models.pharmacy import Medicine
+
 
 
     
