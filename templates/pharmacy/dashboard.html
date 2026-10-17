@@ -6,30 +6,28 @@ Pharmacy Dashboard
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid py-3">
 
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
 
         <div>
-
-            <h2 class="fw-bold">
-                <i class="fas fa-pills text-success"></i>
+            <h2 class="fw-bold mb-1">
+                <i class="fas fa-pills text-success me-2"></i>
                 Pharmacy Dashboard
             </h2>
 
-            <p class="text-muted">
-                Welcome {{ current_user.full_name }}
+            <p class="text-muted mb-0">
+                Welcome, {{ current_user.full_name }}
             </p>
-
         </div>
 
-        <div>
+        <div class="mt-3 mt-md-0">
 
             <a href="{{ url_for('pharmacy.add_medicine') }}"
-               class="btn btn-success">
+               class="btn btn-success me-2">
 
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-plus me-1"></i>
                 Add Medicine
 
             </a>
@@ -37,7 +35,7 @@ Pharmacy Dashboard
             <a href="{{ url_for('pharmacy.list_medicines') }}"
                class="btn btn-primary">
 
-                <i class="fas fa-list"></i>
+                <i class="fas fa-list me-1"></i>
                 Medicine List
 
             </a>
@@ -46,57 +44,49 @@ Pharmacy Dashboard
 
     </div>
 
+
     <!-- Statistics -->
 
     <div class="row g-4 mb-4">
 
-        <div class="col-lg-3 col-md-6">
+        <!-- Total Medicines -->
+        <div class="col-xl-3 col-md-6">
 
-            <div class="card shadow border-0">
+            <div class="card border-0 shadow-sm h-100">
 
-                <div class="card-body text-center">
+                <div class="card-body">
 
-                    <i class="fas fa-capsules fa-2x text-primary mb-3"></i>
+                    <div class="d-flex justify-content-between align-items-center">
 
-                    <h6>Total Medicines</h6>
+                        <div>
 
-                    <h2>{{ total_medicines }}</h2>
+                            <p class="text-muted mb-1">
+                                Total Medicines
+                            </p>
 
-                </div>
+                            <h2 class="fw-bold mb-0">
+                                {{ total_medicines }}
+                            </h2>
 
-            </div>
+                        </div>
 
-        </div>
+                        <div class="bg-primary bg-opacity-10
+                                    rounded-circle p-3">
 
-        <div class="col-lg-3 col-md-6">
+                            <i class="fas fa-capsules
+                                      text-primary fa-lg"></i>
 
-            <div class="card shadow border-0">
+                        </div>
 
-                <div class="card-body text-center">
+                    </div>
 
-                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <a href="{{ url_for('pharmacy.list_medicines') }}"
+                       class="small text-decoration-none">
 
-                    <h6>Active Medicines</h6>
+                        View Medicines
+                        <i class="fas fa-arrow-right ms-1"></i>
 
-                    <h2>{{ active_medicines }}</h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-
-            <div class="card shadow border-0">
-
-                <div class="card-body text-center">
-
-                    <i class="fas fa-triangle-exclamation fa-2x text-warning mb-3"></i>
-
-                    <h6>Low Stock</h6>
-
-                    <h2>{{ low_stock }}</h2>
+                    </a>
 
                 </div>
 
@@ -104,17 +94,137 @@ Pharmacy Dashboard
 
         </div>
 
-        <div class="col-lg-3 col-md-6">
 
-            <div class="card shadow border-0">
+        <!-- Active Medicines -->
+        <div class="col-xl-3 col-md-6">
 
-                <div class="card-body text-center">
+            <div class="card border-0 shadow-sm h-100">
 
-                    <i class="fas fa-calendar-times fa-2x text-danger mb-3"></i>
+                <div class="card-body">
 
-                    <h6>Expired</h6>
+                    <div class="d-flex justify-content-between align-items-center">
 
-                    <h2>{{ expired }}</h2>
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Active Medicines
+                            </p>
+
+                            <h2 class="fw-bold mb-0 text-success">
+                                {{ active_medicines }}
+                            </h2>
+
+                        </div>
+
+                        <div class="bg-success bg-opacity-10
+                                    rounded-circle p-3">
+
+                            <i class="fas fa-check-circle
+                                      text-success fa-lg"></i>
+
+                        </div>
+
+                    </div>
+
+                    <a href="{{ url_for('pharmacy.active_medicines') }}"
+                       class="small text-decoration-none text-success">
+
+                        View Active
+                        <i class="fas fa-arrow-right ms-1"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Low Stock -->
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Low Stock
+                            </p>
+
+                            <h2 class="fw-bold mb-0 text-warning">
+                                {{ low_stock }}
+                            </h2>
+
+                        </div>
+
+                        <div class="bg-warning bg-opacity-10
+                                    rounded-circle p-3">
+
+                            <i class="fas fa-triangle-exclamation
+                                      text-warning fa-lg"></i>
+
+                        </div>
+
+                    </div>
+
+                    <a href="{{ url_for('pharmacy.low_stock') }}"
+                       class="small text-decoration-none text-warning">
+
+                        Check Stock
+                        <i class="fas fa-arrow-right ms-1"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Expired -->
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Expired
+                            </p>
+
+                            <h2 class="fw-bold mb-0 text-danger">
+                                {{ expired }}
+                            </h2>
+
+                        </div>
+
+                        <div class="bg-danger bg-opacity-10
+                                    rounded-circle p-3">
+
+                            <i class="fas fa-calendar-times
+                                      text-danger fa-lg"></i>
+
+                        </div>
+
+                    </div>
+
+                    <a href="{{ url_for('pharmacy.expired') }}"
+                       class="small text-decoration-none text-danger">
+
+                        View Expired
+                        <i class="fas fa-arrow-right ms-1"></i>
+
+                    </a>
 
                 </div>
 
@@ -123,24 +233,108 @@ Pharmacy Dashboard
         </div>
 
     </div>
+
+
+    <!-- Secondary Statistics -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex align-items-center">
+
+                        <div class="bg-info bg-opacity-10
+                                    rounded-circle p-3 me-3">
+
+                            <i class="fas fa-tags text-info"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Medicine Categories
+                            </p>
+
+                            <h4 class="fw-bold mb-0">
+                                {{ total_categories }}
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex align-items-center">
+
+                        <div class="bg-secondary bg-opacity-10
+                                    rounded-circle p-3 me-3">
+
+                            <i class="fas fa-truck text-secondary"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Suppliers
+                            </p>
+
+                            <h4 class="fw-bold mb-0">
+                                {{ total_suppliers }}
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
     <!-- Charts -->
 
-    <div class="row mb-4">
+    <div class="row g-4 mb-4">
 
         <div class="col-lg-6">
 
-            <div class="card shadow">
+            <div class="card border-0 shadow-sm h-100">
 
-                <div class="card-header">
+                <div class="card-header bg-white border-0 pt-3">
 
-                    Stock Overview
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        Stock Overview
+                    </h5>
 
                 </div>
 
                 <div class="card-body">
 
-                    <canvas id="stockChart"></canvas>
+                    <div style="height:300px;">
+                        <canvas id="stockChart"></canvas>
+                    </div>
 
                 </div>
 
@@ -148,19 +342,25 @@ Pharmacy Dashboard
 
         </div>
 
+
         <div class="col-lg-6">
 
-            <div class="card shadow">
+            <div class="card border-0 shadow-sm h-100">
 
-                <div class="card-header">
+                <div class="card-header bg-white border-0 pt-3">
 
-                    Medicine Status
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie text-success me-2"></i>
+                        Medicine Status
+                    </h5>
 
                 </div>
 
                 <div class="card-body">
 
-                    <canvas id="statusChart"></canvas>
+                    <div style="height:300px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
 
                 </div>
 
@@ -170,96 +370,257 @@ Pharmacy Dashboard
 
     </div>
 
-    <!-- Recent Medicines -->
 
-    <div class="card shadow">
+    <!-- Quick Actions -->
 
-        <div class="card-header bg-success text-white">
+    <div class="card border-0 shadow-sm mb-4">
 
-            Recent Medicines
+        <div class="card-header bg-white border-0 pt-3">
+
+            <h5 class="fw-bold">
+                <i class="fas fa-bolt text-warning me-2"></i>
+                Quick Actions
+            </h5>
 
         </div>
 
-        <div class="card-body table-responsive">
+        <div class="card-body">
 
-            <table class="table table-hover">
+            <div class="row g-3">
 
-                <thead>
+                <div class="col-md-3">
 
-                <tr>
+                    <a href="{{ url_for('pharmacy.add_medicine') }}"
+                       class="btn btn-success w-100 py-3">
 
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Manufacturer</th>
-                    <th>Quantity</th>
-                    <th>Expiry</th>
-                    <th>Status</th>
+                        <i class="fas fa-plus-circle d-block mb-2 fa-lg"></i>
 
-                </tr>
+                        Add Medicine
 
-                </thead>
+                    </a>
 
-                <tbody>
+                </div>
 
-                {% for medicine in medicines %}
+                <div class="col-md-3">
 
-                <tr>
+                    <a href="{{ url_for('pharmacy.list_medicines') }}"
+                       class="btn btn-primary w-100 py-3">
 
-                    <td>{{ medicine.medicine_code }}</td>
+                        <i class="fas fa-pills d-block mb-2 fa-lg"></i>
 
-                    <td>{{ medicine.name }}</td>
+                        All Medicines
 
-                    <td>{{ medicine.category }}</td>
+                    </a>
 
-                    <td>{{ medicine.manufacturer }}</td>
+                </div>
 
-                    <td>{{ medicine.quantity }}</td>
+                <div class="col-md-3">
 
-                    <td>{{ medicine.expiry_date }}</td>
+                    <a href="{{ url_for('pharmacy.low_stock') }}"
+                       class="btn btn-warning w-100 py-3 text-dark">
 
-                    <td>
+                        <i class="fas fa-box-open d-block mb-2 fa-lg"></i>
 
-                        {% if medicine.status == "Active" %}
+                        Low Stock
 
-                            <span class="badge bg-success">
+                    </a>
 
-                                Active
+                </div>
+
+                <div class="col-md-3">
+
+                    <a href="{{ url_for('pharmacy.expired') }}"
+                       class="btn btn-danger w-100 py-3">
+
+                        <i class="fas fa-calendar-xmark d-block mb-2 fa-lg"></i>
+
+                        Expired
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recent Medicines -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-success text-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-clock me-2"></i>
+
+                    Recent Medicines
+
+                </h5>
+
+                <a href="{{ url_for('pharmacy.list_medicines') }}"
+                   class="btn btn-sm btn-light">
+
+                    View All
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                    <tr>
+
+                        <th>Code</th>
+                        <th>Medicine</th>
+                        <th>Manufacturer</th>
+                        <th>Quantity</th>
+                        <th>Expiry</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for medicine in medicines %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="fw-semibold">
+
+                                {{ medicine.medicine_code }}
 
                             </span>
 
-                        {% else %}
+                        </td>
 
-                            <span class="badge bg-danger">
 
-                                Inactive
+                        <td>
 
-                            </span>
+                            <div class="fw-semibold">
 
-                        {% endif %}
+                                {{ medicine.name }}
 
-                    </td>
+                            </div>
 
-                </tr>
+                        </td>
 
-                {% else %}
 
-                <tr>
+                        <td>
 
-                    <td colspan="7"
-                        class="text-center">
+                            {{ medicine.manufacturer or "-" }}
 
-                        No Medicines Available
+                        </td>
 
-                    </td>
 
-                </tr>
+                        <td>
 
-                {% endfor %}
+                            {% if medicine.quantity <= medicine.minimum_stock %}
 
-                </tbody>
+                                <span class="badge bg-warning text-dark">
 
-            </table>
+                                    {{ medicine.quantity }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+
+                                    {{ medicine.quantity }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if medicine.expiry_date %}
+
+                                {{ medicine.expiry_date.strftime('%d %b %Y') }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if medicine.status == "Active" %}
+
+                                <span class="badge bg-success">
+
+                                    <i class="fas fa-check me-1"></i>
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    <i class="fas fa-ban me-1"></i>
+                                    Inactive
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="6"
+                            class="text-center py-5 text-muted">
+
+                            <i class="fas fa-pills fa-2x mb-3"></i>
+
+                            <p class="mb-0">
+                                No medicines available.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
@@ -269,47 +630,135 @@ Pharmacy Dashboard
 
 {% endblock %}
 
+
 {% block js %}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 
-new Chart(document.getElementById('stockChart'), {
+document.addEventListener("DOMContentLoaded", function () {
 
-    type: 'bar',
+    /* -------------------------------
+       Stock Chart
+    -------------------------------- */
 
-    data: {
+    new Chart(
+        document.getElementById("stockChart"),
+        {
+            type: "bar",
 
-        labels: ['Total','Low Stock'],
+            data: {
 
-        datasets: [{
+                labels: [
+                    "Total",
+                    "Active",
+                    "Low Stock",
+                    "Expired"
+                ],
 
-            label: 'Medicines',
+                datasets: [{
 
-            data: [{{ total_medicines }}, {{ low_stock }}]
+                    label: "Medicines",
 
-        }]
+                    data: [
+                        {{ total_medicines }},
+                        {{ active_medicines }},
+                        {{ low_stock }},
+                        {{ expired }}
+                    ],
 
-    }
+                    borderWidth: 1
 
-});
+                }]
 
-new Chart(document.getElementById('statusChart'), {
+            },
 
-    type: 'doughnut',
+            options: {
 
-    data: {
+                responsive: true,
 
-        labels: ['Active','Expired'],
+                maintainAspectRatio: false,
 
-        datasets: [{
+                plugins: {
 
-            data: [{{ active_medicines }}, {{ expired }}]
+                    legend: {
+                        display: false
+                    }
 
-        }]
+                },
 
-    }
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* -------------------------------
+       Status Chart
+    -------------------------------- */
+
+    new Chart(
+        document.getElementById("statusChart"),
+        {
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Active",
+                    "Inactive",
+                    "Expired"
+                ],
+
+                datasets: [{
+
+                    data: [
+                        {{ active_medicines }},
+                        {{ inactive_medicines }},
+                        {{ expired }}
+                    ],
+
+                    borderWidth: 1
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
 
 });
 
