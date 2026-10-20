@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import secrets
 
 from flask import (
     Blueprint,
@@ -20,10 +21,9 @@ from flask_login import (
 from flask_mail import Message
 
 from extensions import db, mail
-
 from models.user import User
 from models.patient import Patient
-import secrets
+
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 
@@ -31,9 +31,9 @@ from sib_api_v3_sdk.rest import ApiException
 auth = Blueprint("auth", __name__)
 
 
-# =====================================
-# Login
-# =====================================
+# =========================================================
+# LOGIN
+# =========================================================
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
@@ -67,11 +67,23 @@ def login():
     # Login POST
     if request.method == "POST":
 
-        email = request.form.get("email", "").strip()
-        password = request.form.get("password", "")
-        remember = bool(request.form.get("remember"))
+        email = request.form.get(
+            "email",
+            ""
+        ).strip()
 
-        user = User.query.filter_by(email=email).first()
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+        remember = bool(
+            request.form.get("remember")
+        )
+
+        user = User.query.filter_by(
+            email=email
+        ).first()
 
         if not user:
 
@@ -117,37 +129,45 @@ def login():
         )
 
         # Role Redirect
+
         if user.role == User.ROLE_ADMIN:
+
             return redirect(
                 url_for("admin.dashboard")
             )
 
         elif user.role == User.ROLE_DOCTOR:
+
             return redirect(
                 url_for("doctor.dashboard")
             )
 
         elif user.role == User.ROLE_PATIENT:
+
             return redirect(
                 url_for("patient.dashboard")
             )
 
         elif user.role == User.ROLE_PHARMACIST:
+
             return redirect(
                 url_for("pharmacy.dashboard")
             )
 
         elif user.role == User.ROLE_ACCOUNTANT:
+
             return redirect(
                 url_for("billing.list_bills")
             )
 
         elif user.role == User.ROLE_LAB:
+
             return redirect(
                 url_for("medical_report.list_reports")
             )
 
         elif user.role == User.ROLE_RECEPTIONIST:
+
             return redirect(
                 url_for("receptionist.dashboard")
             )
@@ -161,11 +181,14 @@ def login():
     )
 
 
-# =====================================
-# Register - Patient Only
-# =====================================
+# =========================================================
+# REGISTER - PATIENT ONLY
+# =========================================================
 
-@auth.route("/register", methods=["GET", "POST"])
+@auth.route(
+    "/register",
+    methods=["GET", "POST"]
+)
 def register():
 
     if request.method == "POST":
@@ -190,7 +213,8 @@ def register():
             ""
         )
 
-        # Check password
+        # Password confirmation
+
         if password != confirm_password:
 
             flash(
@@ -203,6 +227,7 @@ def register():
             )
 
         # Check existing email
+
         existing_user = User.query.filter_by(
             email=email
         ).first()
@@ -219,6 +244,7 @@ def register():
             )
 
         # Create user
+
         user = User(
             full_name=full_name,
             email=email,
@@ -231,6 +257,7 @@ def register():
         db.session.commit()
 
         # Create patient
+
         patient = Patient(
             user_id=user.id,
             patient_code=f"PAT{user.id:05d}",
@@ -259,11 +286,20 @@ def register():
         "auth/register.html"
     )
 
+
+# =========================================================
+# FORGOT PASSWORD
+# =========================================================
+
 @auth.route(
     "/forgot-password",
     methods=["GET", "POST"]
 )
 def forgot_password():
+
+    # IMPORTANT:
+    # GET should show the ENTER EMAIL page,
+    # NOT the reset password page.
 
     if request.method == "POST":
 
@@ -271,6 +307,19 @@ def forgot_password():
             "email",
             ""
         ).strip()
+
+        if not email:
+
+            flash(
+                "Please enter your email address.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("auth.forgot_password")
+            )
+
+        # Find user
 
         user = User.query.filter_by(
             email=email
@@ -287,7 +336,8 @@ def forgot_password():
                 url_for("auth.forgot_password")
             )
 
-        # Generate reset token
+        # Generate secure token
+
         token = secrets.token_urlsafe(32)
 
         user.reset_token = token
@@ -299,7 +349,10 @@ def forgot_password():
 
         db.session.commit()
 
-        # Generate production reset URL
+        # =================================================
+        # CREATE RESET LINK
+        # =================================================
+
         reset_link = (
             current_app.config["APP_URL"]
             + url_for(
@@ -308,349 +361,381 @@ def forgot_password():
             )
         )
 
-        # =====================================
-        # Brevo API configuration
-        # =====================================
+        # =================================================
+        # BREVO CONFIGURATION
+        # =================================================
 
-        configuration = sib_api_v3_sdk.Configuration()
-
-        configuration.api_key["api-key"] = (
-            current_app.config["BREVO_API_KEY"]
+        configuration = (
+            sib_api_v3_sdk.Configuration()
         )
 
-        api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
-            sib_api_v3_sdk.ApiClient(configuration)
+        configuration.api_key[
+            "api-key"
+        ] = current_app.config[
+            "BREVO_API_KEY"
+        ]
+
+        api_instance = (
+            sib_api_v3_sdk.TransactionalEmailsApi(
+                sib_api_v3_sdk.ApiClient(
+                    configuration
+                )
+            )
         )
 
-        # =====================================
-        # Create Password Reset Email
-        # =====================================
+        # =================================================
+        # EMAIL
+        # =================================================
 
-        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        send_smtp_email = (
+            sib_api_v3_sdk.SendSmtpEmail(
 
-            sender={
-                "name": "Hospital Management System",
-                "email": current_app.config["MAIL_DEFAULT_SENDER"]
-            },
+                sender={
+                    "name":
+                        "Hospital Management System",
 
-            to=[
-                {
-                    "email": user.email,
-                    "name": user.full_name
-                }
-            ],
+                    "email":
+                        current_app.config[
+                            "MAIL_DEFAULT_SENDER"
+                        ]
+                },
 
-            subject="Hospital Management System - Password Reset",
+                to=[
+                    {
+                        "email":
+                            user.email,
 
-            # Plain-text fallback
-            text_content=f"""
-        Hello {user.full_name},
+                        "name":
+                            user.full_name
+                    }
+                ],
 
-        A request was received to reset your password.
+                subject=(
+                    "Hospital Management System "
+                    "- Password Reset"
+                ),
 
-        Click the link below to reset your password:
+                # Plain text
 
-        {reset_link}
+                text_content=f"""
+Hello {user.full_name},
 
-        This link will expire in 30 minutes.
+We received a request to reset your password.
 
-        If you did not request a password reset,
-        you can safely ignore this email.
+Click the link below to reset your password:
 
-        Hospital Management System
-        """,
+{reset_link}
 
-            # HTML email
-            html_content=f"""
-        <!DOCTYPE html>
-        <html lang="en">
+This link will expire in 30 minutes.
 
-        <head>
+If you did not request a password reset,
+you can safely ignore this email.
 
-            <meta charset="UTF-8">
+Hospital Management System
+""",
 
-            <meta name="viewport"
-                  content="width=device-width, initial-scale=1.0">
+                # HTML
 
-            <title>Password Reset</title>
+                html_content=f"""
+<!DOCTYPE html>
 
-        </head>
+<html lang="en">
 
-        <body style="
-            margin:0;
-            padding:0;
-            background:#f4f6f9;
-            font-family:Arial, Helvetica, sans-serif;
-        ">
+<head>
 
-        <table width="100%"
-               cellpadding="0"
-               cellspacing="0"
-               style="
-                   background:#f4f6f9;
-                   padding:40px 15px;
-               ">
+<meta charset="UTF-8">
 
-            <tr>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-                <td align="center">
+<title>Password Reset</title>
 
-                    <table width="600"
-                           cellpadding="0"
-                           cellspacing="0"
-                           style="
-                               max-width:600px;
-                               width:100%;
-                               background:#ffffff;
-                               border-radius:12px;
-                               overflow:hidden;
-                           ">
+</head>
 
-                        <!-- Header -->
 
-                        <tr>
+<body style="
+margin:0;
+padding:0;
+background:#f4f6f9;
+font-family:Arial, Helvetica, sans-serif;
+">
 
-                            <td align="center"
-                                style="
-                                    background:#0d6efd;
-                                    padding:30px 20px;
-                                ">
 
-                                <div style="
-                                    font-size:40px;
-                                    margin-bottom:10px;
-                                ">
+<table width="100%"
+       cellpadding="0"
+       cellspacing="0"
+       style="
+       background:#f4f6f9;
+       padding:40px 15px;
+       ">
 
-                                    🔐
+<tr>
 
-                                </div>
+<td align="center">
 
-                                <h1 style="
-                                    margin:0;
-                                    color:#ffffff;
-                                    font-size:25px;
-                                ">
 
-                                    Hospital Management System
+<table width="600"
+       cellpadding="0"
+       cellspacing="0"
+       style="
+       max-width:600px;
+       width:100%;
+       background:#ffffff;
+       border-radius:12px;
+       overflow:hidden;
+       ">
 
-                                </h1>
 
-                            </td>
+<!-- HEADER -->
 
-                        </tr>
+<tr>
 
+<td align="center"
+    style="
+    background:#0d6efd;
+    padding:30px 20px;
+    ">
 
-                        <!-- Main Content -->
+<div style="
+font-size:40px;
+margin-bottom:10px;
+">
 
-                        <tr>
+🔐
 
-                            <td style="
-                                padding:40px 35px;
-                                color:#333333;
-                            ">
+</div>
 
-                                <h2 style="
-                                    margin-top:0;
-                                    color:#222222;
-                                ">
 
-                                    Password Reset Request
+<h1 style="
+margin:0;
+color:#ffffff;
+font-size:25px;
+">
 
-                                </h2>
+Hospital Management System
 
+</h1>
 
-                                <p style="
-                                    font-size:16px;
-                                    line-height:1.6;
-                                ">
+</td>
 
-                                    Hello
-                                    <strong>{user.full_name}</strong>,
+</tr>
 
-                                </p>
 
+<!-- CONTENT -->
 
-                                <p style="
-                                    font-size:16px;
-                                    line-height:1.6;
-                                ">
+<tr>
 
-                                    We received a request to reset
-                                    the password for your account.
+<td style="
+padding:40px 35px;
+color:#333333;
+">
 
-                                </p>
 
+<h2 style="
+margin-top:0;
+color:#222222;
+">
 
-                                <p style="
-                                    font-size:16px;
-                                    line-height:1.6;
-                                ">
+Password Reset Request
 
-                                    Click the button below to create
-                                    a new password.
+</h2>
 
-                                </p>
 
+<p style="
+font-size:16px;
+line-height:1.6;
+">
 
-                                <!-- Reset Button -->
+Hello
+<strong>{user.full_name}</strong>,
 
-                                <table width="100%"
-                                       cellpadding="0"
-                                       cellspacing="0">
+</p>
 
-                                    <tr>
 
-                                        <td align="center"
-                                            style="padding:25px 0;">
+<p style="
+font-size:16px;
+line-height:1.6;
+">
 
-                                            <a href="{reset_link}"
-                                               style="
-                                                   display:inline-block;
-                                                   background:#0d6efd;
-                                                   color:#ffffff;
-                                                   text-decoration:none;
-                                                   padding:14px 30px;
-                                                   border-radius:6px;
-                                                   font-size:16px;
-                                                   font-weight:bold;
-                                               ">
+We received a request to reset
+the password for your account.
 
-                                                Reset My Password
+</p>
 
-                                            </a>
 
-                                        </td>
+<p style="
+font-size:16px;
+line-height:1.6;
+">
 
-                                    </tr>
+Click the button below to create
+a new password.
 
-                                </table>
+</p>
 
 
-                                <!-- Expiry Warning -->
+<!-- BUTTON -->
 
-                                <div style="
-                                    background:#fff3cd;
-                                    border:1px solid #ffecb5;
-                                    border-radius:6px;
-                                    padding:15px;
-                                    margin:10px 0 25px 0;
-                                ">
+<table width="100%"
+       cellpadding="0"
+       cellspacing="0">
 
-                                    <p style="
-                                        margin:0;
-                                        color:#664d03;
-                                        font-size:14px;
-                                        line-height:1.5;
-                                    ">
+<tr>
 
-                                        <strong>Important:</strong>
+<td align="center"
+    style="padding:25px 0;">
 
-                                        This password reset link will
-                                        expire in 30 minutes.
+<a href="{reset_link}"
+   style="
+   display:inline-block;
+   background:#0d6efd;
+   color:#ffffff;
+   text-decoration:none;
+   padding:14px 30px;
+   border-radius:6px;
+   font-size:16px;
+   font-weight:bold;
+   ">
 
-                                    </p>
+Reset My Password
 
-                                </div>
+</a>
 
+</td>
 
-                                <p style="
-                                    font-size:14px;
-                                    color:#666666;
-                                    line-height:1.6;
-                                ">
+</tr>
 
-                                    If you did not request a password
-                                    reset, you can safely ignore this
-                                    email.
+</table>
 
-                                </p>
 
+<!-- EXPIRY -->
 
-                                <!-- Fallback Link -->
+<div style="
+background:#fff3cd;
+border:1px solid #ffecb5;
+border-radius:6px;
+padding:15px;
+margin:10px 0 25px 0;
+">
 
-                                <p style="
-                                    font-size:13px;
-                                    color:#777777;
-                                    line-height:1.5;
-                                    margin-top:25px;
-                                ">
+<p style="
+margin:0;
+color:#664d03;
+font-size:14px;
+line-height:1.5;
+">
 
-                                    If the button does not work,
-                                    copy and paste this link into
-                                    your browser:
+<strong>Important:</strong>
 
-                                </p>
+This password reset link will
+expire in 30 minutes.
 
+</p>
 
-                                <p style="
-                                    font-size:12px;
-                                    word-break:break-all;
-                                    color:#0d6efd;
-                                ">
+</div>
 
-                                    {reset_link}
 
-                                </p>
+<p style="
+font-size:14px;
+color:#666666;
+line-height:1.6;
+">
 
-                            </td>
+If you did not request a password
+reset, you can safely ignore this email.
 
-                        </tr>
+</p>
 
 
-                        <!-- Footer -->
+<!-- FALLBACK LINK -->
 
-                        <tr>
+<p style="
+font-size:13px;
+color:#777777;
+line-height:1.5;
+margin-top:25px;
+">
 
-                            <td align="center"
-                                style="
-                                    background:#f8f9fa;
-                                    padding:25px 20px;
-                                    border-top:1px solid #eeeeee;
-                                ">
+If the button does not work,
+copy and paste this link into
+your browser:
 
-                                <p style="
-                                    margin:0 0 8px 0;
-                                    font-size:13px;
-                                    color:#777777;
-                                ">
+</p>
 
-                                    Hospital Management System
 
-                                </p>
+<p style="
+font-size:12px;
+word-break:break-all;
+color:#0d6efd;
+">
 
+{reset_link}
 
-                                <p style="
-                                    margin:0;
-                                    font-size:12px;
-                                    color:#999999;
-                                ">
+</p>
 
-                                    This is an automated email.
-                                    Please do not reply.
 
-                                </p>
+</td>
 
-                            </td>
+</tr>
 
-                        </tr>
 
-                    </table>
+<!-- FOOTER -->
 
-                </td>
+<tr>
 
-            </tr>
+<td align="center"
+    style="
+    background:#f8f9fa;
+    padding:25px 20px;
+    border-top:1px solid #eeeeee;
+    ">
 
-        </table>
+<p style="
+margin:0 0 8px 0;
+font-size:13px;
+color:#777777;
+">
 
-        </body>
+Hospital Management System
 
-        </html>
-        """
+</p>
+
+
+<p style="
+margin:0;
+font-size:12px;
+color:#999999;
+">
+
+This is an automated email.
+Please do not reply.
+
+</p>
+
+</td>
+
+</tr>
+
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+
+</body>
+
+</html>
+"""
+            )
         )
 
-
-        # Send through Brevo API
-
+        # =================================================
+        # SEND EMAIL THROUGH BREVO
+        # =================================================
 
         try:
 
@@ -671,7 +756,9 @@ def forgot_password():
             )
 
             return redirect(
-                url_for("auth.forgot_password")
+                url_for(
+                    "auth.forgot_password"
+                )
             )
 
         flash(
@@ -682,25 +769,167 @@ def forgot_password():
         return redirect(
             url_for("auth.login")
         )
+
+    # =====================================================
+    # GET
+    # =====================================================
+
     return render_template(
-        "auth/reset_password.html"
+        "auth/forgot_password.html"
     )
 
 
-# =====================================
-# Test Email
-# =====================================
+# =========================================================
+# RESET PASSWORD
+# =========================================================
+
+@auth.route(
+    "/reset-password/<token>",
+    methods=["GET", "POST"]
+)
+def reset_password(token):
+
+    # Find user by reset token
+
+    user = User.query.filter_by(
+        reset_token=token
+    ).first()
+
+    if not user:
+
+        flash(
+            "Invalid or expired password reset link.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    # Check expiry
+
+    if (
+        not user.reset_token_expiry
+        or user.reset_token_expiry < datetime.utcnow()
+    ):
+
+        # Clear expired token
+
+        user.reset_token = None
+        user.reset_token_expiry = None
+
+        db.session.commit()
+
+        flash(
+            "This password reset link has expired. "
+            "Please request a new one.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("auth.forgot_password")
+        )
+
+    # =====================================================
+    # SUBMIT NEW PASSWORD
+    # =====================================================
+
+    if request.method == "POST":
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+        confirm_password = request.form.get(
+            "confirm_password",
+            ""
+        )
+
+        # Check empty password
+
+        if not password:
+
+            flash(
+                "Please enter a new password.",
+                "danger"
+            )
+
+            return redirect(
+                url_for(
+                    "auth.reset_password",
+                    token=token
+                )
+            )
+
+        # Check password match
+
+        if password != confirm_password:
+
+            flash(
+                "Passwords do not match.",
+                "danger"
+            )
+
+            return redirect(
+                url_for(
+                    "auth.reset_password",
+                    token=token
+                )
+            )
+
+        # Set new password
+
+        user.set_password(password)
+
+        # Invalidate token
+
+        user.reset_token = None
+        user.reset_token_expiry = None
+
+        db.session.commit()
+
+        flash(
+            "Password reset successful. "
+            "Please login with your new password.",
+            "success"
+        )
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    # =====================================================
+    # SHOW RESET PASSWORD PAGE
+    # =====================================================
+
+    return render_template(
+        "auth/reset_password.html",
+        token=token
+    )
+
+
+# =========================================================
+# TEST EMAIL
+# =========================================================
 
 @auth.route("/test-email")
 @login_required
 def test_email():
 
     msg = Message(
-        subject="Hospital Management System - Email Test",
+        subject=(
+            "Hospital Management System "
+            "- Email Test"
+        ),
+
         sender=current_app.config[
             "MAIL_DEFAULT_SENDER"
         ],
-        recipients=[current_user.email]
+
+        recipients=[
+            current_user.email
+        ]
     )
 
     msg.body = f"""
@@ -729,9 +958,9 @@ Hospital Management System
     )
 
 
-# =====================================
-# Logout
-# =====================================
+# =========================================================
+# LOGOUT
+# =========================================================
 
 @auth.route("/logout")
 @login_required
